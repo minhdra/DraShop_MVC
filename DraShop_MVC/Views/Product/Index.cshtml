@@ -1,0 +1,102 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PageLayout.cshtml";
+}
+
+<div class="products container row m-auto" ng-controller="ProductController">
+    <div class="col-md-4 col-lg-3 col-xl-3 pt-5 left__column">
+        <div class="collapse__wrap">
+            <h3 class="collapse__title text-uppercase"
+                data-toggle="collapse"
+                data-target="#collapseCollect"
+                role="button">
+                Collections
+            </h3>
+            <div class="collapse show collapse__content" id="collapseCollect">
+                <ul class="list-collapse">
+                    <li class="active"><a href="/Product/Index">Mens</a></li>
+                    <li class=""><a href="/Product/Index">Womens</a></li>
+                    <li class=""><a href="/Product/Index">Trending</a></li>
+                    <li class=""><a href="/Product/Index">Top Seller</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="collapse__wrap">
+            <h3 class="collapse__title text-uppercase"
+                data-toggle="collapse"
+                data-target="#collapseType"
+                role="button">
+                Product Type
+            </h3>
+            <div class="collapse show collapse__content" id="collapseType">
+                <ul class="list-collapse">
+                    <li class=""><a href="/Product/Index">Bags</a></li>
+                    <li class=""><a href="/Product/Index">Hoodie</a></li>
+                    <li class=""><a href="/Product/Index">Shirt</a></li>
+                    <li class=""><a href="/Product/Index">Jeans</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="collapse__wrap">
+            <h3 class="collapse__title text-uppercase"
+                data-toggle="collapse"
+                data-target="#collapsePrice"
+                role="button">
+                Price
+            </h3>
+            <div class="collapse show collapse__content" id="collapsePrice">
+                <div class="scrollWidget__inputs d-flex align-items-center justify-content-between">
+                    <input class="form-control" type="number" value="0"/>
+                    <span class="px-4"><i class="fal fa-minus"></i></span>
+                    <input class="form-control" type="number" value="480"/>
+                </div>
+                <div class="scrollWidget__progress">
+                    <button class="scrollWidget__progress-left"></button>
+                    <div class="scrollWidget__progress-line"></div>
+                    <button class="scrollWidget__progress-right"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8 col-lg-9 col-xl-9 pt-5">
+        <div class="right__head d-flex justify-content-between align-items-center">
+            <h1>{{selectedName}}</h1>
+            <div class="tools">
+                <select class="form-control"
+                        ng-model="valueSort" style="padding: 0 1rem;"
+                        ng-change="SortBy()">
+                    <option value="" selected>Featured</option>
+                    <option value="name|Ascending">Name Ascending</option>
+                    <option value="name|Descending">Name Descending</option>
+                    <option value="price.price_current|Ascending">Price Ascending</option>
+                    <option value="price.price_current|Descending">Price Descending</option>
+                </select>
+            </div>
+        </div>
+        <div class="row products__wrap">
+            <div class="col-lg-4 col-md-6 col-sm-12"
+                 dir-paginate="item in products | orderBy:sortColumn:reverse | itemsPerPage:pageSize"
+                 total-items="totalCount">
+                <div class="single__product text-center mb-40">
+                    <div class="single__img">
+                        <img class="w-100" ng-src="{{item.image_avatar}}" alt="">
+                        <div class="overlay">
+                            <a class="btn btn-orange" 
+                               href="/Detail/Index" ng-click="goDetail(item._id)">Order Now</a>
+                        </div>
+                    </div>
+                    <div class="product__caption">
+                        <h5><a href="/Detail/Index" ng-click="goDetail(item._id)">{{item.name}}</a></h5>
+                        <div class="numbering">${{item.price.price_current}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <dir-pagination-controls max-size="maxSize" 
+                                 direction-links="true"
+                                 boundary-links="true"
+                                 on-page-change="GetProuducts(newPageNumber)"></dir-pagination-controls>
+    </div>
+</div>
+

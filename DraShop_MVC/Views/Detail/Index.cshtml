@@ -1,0 +1,78 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PageLayout.cshtml";
+}
+
+<div class="product__details__wrapper container" ng-controller="DetailController">
+    <div class="product__wrapper d-flex justify-content-between">
+        <div class="product__primary col-lg-8 pl-0">
+            <a href="#" class="btn btn-back"><i class="fal fa-long-arrow-left"></i></a>
+            <div class="product__visual">
+                <ul class="product__visual__list d-flex flex-wrap slick-slider">
+                    <li class="visual-item" 
+                        ng-repeat="img in color.color_list[index].image">
+                        <picture>
+                            <img ng-src="{{img}}" />
+                        </picture>
+                    </li>
+                </ul>
+                <div class="btn-slide">
+                    <button class="btn-slide-prev"><i class="far fa-angle-left"></i></button>
+                    <button class="btn-slide-next"><i class="far fa-angle-right"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="product__details col-lg-4 p-lg-3 p-md-2">
+            <div class="product__details-head">
+                <span>ID: {{product._id}}</span>
+                <div class="wishlist">
+                    <i class="far fa-heart active"></i>
+                    <i class="fas fa-heart"></i>
+                </div>
+            </div>
+            <div class="product__details-title">
+                <h1>{{product.name}}</h1>
+            </div>
+            
+            <div class="product__details-color dropdown">
+                <div class="dropdown-toggle" 
+                     id="menuSelectColor" 
+                     data-toggle="dropdown"
+                     @*ng-click="clickMenuColor()"*@>
+                    <span>Color <i class="fas fa-sort-down"></i></span>
+                    <span>{{color.color_list[index].color}}</span>
+                </div>
+                <div class="list-color dropdown-menu w-100" aria-labelledby="menuSelectColor">
+                    <div class="dropdown-item" 
+                         ng-repeat="color in color.color_list"
+                         ng-click="changeColor($index)">
+                        {{color.color}}
+                    </div>
+                </div>
+            </div>
+            <div class="product__details-size">
+                <span>Size</span>
+                <ul>
+                    <li class="btn btn-size" 
+                        ng-repeat="size in color.color_list[index].size"
+                        ng-click="changeSize($index, size.quantity)">
+                        {{size.size}}
+                    </li>
+                </ul>
+            </div>
+            <div class="product__details-price">
+                <span>${{product.price.price_current}}</span>
+                <span class="stock in__stock active"><i class="fas fa-circle"></i> In Stock</span>
+                <span class="stock not__in__stock"><i class="fas fa-circle"></i> Not In Stock</span>
+            </div>
+            <div class="product__details-add_cart">
+                <button class="btn btn-add_cart">Add to Cart</button>
+            </div>
+            <div class="product__details-description">
+                <h2>{{product.summary}}</h2>
+                {{product.description}}
+            </div>
+        </div>
+    </div>
+</div>

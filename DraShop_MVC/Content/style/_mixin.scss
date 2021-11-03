@@ -1,0 +1,18 @@
+﻿@import "_variables.scss";
+
+@mixin setWidthHeight($width: auto, $heigh: $width) {
+    width: $width;
+    height: $heigh;
+}
+
+@mixin setFont($fontSize: 1.6rem, $color: $color-dark, $lineHeight: $fontSize) {
+    font-size: $fontSize;
+    color: $color;
+    line-height: $lineHeight;
+}
+
+@mixin setPositionCenter($left: 0) {
+    top: 50%;
+    left: $left;
+    transform: translate(calc(0 - $left), -50%);
+}

@@ -1,0 +1,50 @@
+﻿<nav class="header__bottom navbar navbar-expand-lg" ng-controller="MenuController">
+    <a class="navbar-brand" href="/"><img src="~/Content/images/logo.jpg" /></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="far fa-bars"></i>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" ng-href="#client">New</a>
+            </li>
+            <li class="nav-item dropdown">
+                <div class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Men
+                </div>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/Product/Index" 
+                       ng-repeat="category in categories"
+                       ng-click="selectCategory(category._id, category.name)">
+                        {{category.name}}
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <div class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Women
+                </div>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="#" ng-repeat="category in categories">
+                        {{category.name}}
+                    </a>
+                    @*<div class="dropdown-divider"></div>*@
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">About</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Contact</a>
+            </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+            <input id="search" type="search" placeholder="Search..." autofocus>
+            <button class="btn__search my-sm-0" type="submit"><i class="far fa-search"></i></button>
+        </form>
+    </div>
+</nav>

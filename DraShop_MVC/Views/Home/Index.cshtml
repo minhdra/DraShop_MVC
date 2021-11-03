@@ -1,0 +1,167 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PageLayout.cshtml";
+}
+<div class="slideshow d-flex" ng-controller="SlideShowController">
+    <div class="carousel slide w-100">
+        <div class="owl-carousel owl-theme">
+            <div class="carou-item">
+                <img src="~/Content/images/slide1.jpg" alt="slide1" />
+                <div class="caption d-none d-md-block">
+                    <h4>Find Products for <br /> Your Shop</h4>
+                    <p>Oberlo allows you to easily import dropshipped products directly into your ecommerce store</p>
+                    <button class="btn btn-orange">Show Now <i class="fal fa-long-arrow-right" style="line-height: 1.25;"></i></button>
+                </div>
+            </div>
+            <div class="carou-item">
+                <img src="~/Content/images/slide2.jpg" alt="slide2" />
+                <div class="caption d-none d-md-block">
+                    <h4>Find Products for <br /> Your Shop</h4>
+                    <p>Oberlo allows you to easily import dropshipped products directly into your ecommerce store</p>
+                    <button class="btn btn-orange">Show Now <i class="fal fa-long-arrow-right" style="line-height: 1.25;"></i></button>
+                </div>
+            </div>
+            <div class="carou-item">
+                <img src="~/Content/images/slide3.jpg" alt="slide3" />
+                <div class="caption d-none d-md-block">
+                    <h4>Find Products for <br /> Your Shop</h4>
+                    <p>Oberlo allows you to easily import dropshipped products directly into your ecommerce store</p>
+                    <button class="btn btn-orange">Show Now <i class="fal fa-long-arrow-right" style="line-height: 1.25;"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="services section__padding">
+    <div class="container">
+        <div class="row justify-content-sm-center">
+            <div class="col-xl-7 col-lg-8 col-md-11">
+                <div class="section__tittle text-center mb-70">
+                    <h2>Chose your style</h2>
+                    <p>Fashion you can buy, but style you possess. <br />
+                    The key to style is learning who you are, which takes years.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-6 my-4"  data-aos="fade-up">
+                <div class="service text-center">
+                    <div class="service__icon">
+                        <i class="fab fa-d-and-d"></i>
+                    </div>
+                    <div class="service__cap">
+                        <h5>Classic</h5>
+                        <p>
+                            Classic style is an umbrella term for a polished everyday style that incorporates elements of workwear, 
+                            such as blazers, pencil skirts, and khakis.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6 my-4"  data-aos="fade-down">
+                <div class="service text-center">
+                    <div class="service__icon">
+                        <i class="fab fa-phoenix-framework"></i>
+                    </div>
+                    <div class="service__cap">
+                        <h5>Streetwear</h5>
+                        <p>
+                            Streetwear takes inspiration from both hip-hop and skater style, 
+                            with the added element of intentional product scarcity.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6 my-4"  data-aos="fade-up">
+                <div class="service text-center">
+                    <div class="service__icon">
+                        <i class="fal fa-pegasus"></i>
+                    </div>
+                    <div class="service__cap">
+                        <h5>Sporty</h5>
+                        <p>
+                            Sporty style, also known as athleisure, 
+                            takes elements of athletic wear, like leggings, 
+                            bike shorts, and oversize sweatshirts, out of the gym and onto the streets.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="client section__padding section__img-bg" ng-controller="ClientSlideController">
+    <div class="container">
+        <div class="row justify-content-between">
+            <div class="col-xl-5 col-lg-6 col-md-6">
+                <div class="section__tittle">
+                    <h2>Most Popular</h2>
+                    <p>Fashion you can buy, but style you possess.</p>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-6 text-right align-self-center">
+                <button class="btn btn-orange">Our Products</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="nav-button">
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <a class="nav-link active" href="#nav-men" id="men-tab" data-toggle="tab" role="tab" >Men</a>
+                            <a class="nav-link" href="#nav-women" id="women-tab" data-toggle="tab" role="tab">Women</a>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="client" class="container">
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade active show" id="nav-men" role="tabpanel" aria-labelledby="men-tab">
+                @*<div class="items-active slick-slider products__wrapper">*@
+                <div class="items-active owl-carousel owl-theme products__wrapper">
+                    <div @*class="col-lg-4 col-md-6 col-sm-6"*@
+                         ng-repeat="item in productsMen">
+                        <div class="single__product text-center">
+                            <div class="single__img">
+                                <img ng-src="{{item.image_avatar}}" alt="">
+                                <div class="numbering">${{item.price.price_current}}</div>
+                            </div>
+                            <div class="product__caption">
+                                <h5>
+                                    <a href="/Detail/Index" ng-click="goDetail(item._id)">
+                                        {{item.name}}
+                                    </a>
+                                </h5>
+                                <a href="/Detail/Index" ng-click="goDetail(item._id)"
+                                   class="btn btn-link">Order Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="nav-women" role="tabpanel" aria-labelledby="women-tab">
+                <div class="items-active slick-slider products__wrapper">
+                    <div class="col-lg-4 col-md-6 col-sm-6 slick-slide"
+                         ng-repeat="item in productsWomen">
+                        <div class="single__product text-center mb-40">
+                            <div class="single__img">
+                                <img ng-src="{{item.image}}" alt="">
+                                <div class="numbering">{{item.price}}</div>
+                            </div>
+                            <div class="product__caption">
+                                <h5><a href="#">{{item.name}}</a></h5>
+                                <p>{{item.description}}</p>
+                                <a href="#" class="btn btn-link">Order Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

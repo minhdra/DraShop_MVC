@@ -167,6 +167,53 @@ html {
     }
 }
 
+.btn-light-custom {
+    color: $color-dark;
+    background-color: $color-white;
+    border: 1px solid $color-dark;
+    text-decoration: none;
+    padding: .5rem 1.5rem;
+    transition: 0.3s ease;
+    position: relative;
+    border-radius: $radius;
+    /*margin-right: 1rem;*/
+    font-weight: 600;
+    z-index: 1;
+    overflow: hidden;
+    font-family: inherit;
+
+    &:hover {
+        color: $color-white;
+    }
+
+    &::before {
+        content: '';
+        position: absolute;
+        @include setWidthHeight(100%);
+        background-color: $color-orange-1;
+        color: $color-dark;
+        border-color: $color-orange-1;
+        top: 0;
+        left: 0;
+        transition: 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+        transform-origin: bottom left;
+        transform: scaleX(0);
+        z-index: -1;
+    }
+
+    &:hover::before {
+        transform: scaleX(1);
+        z-index: -1;
+    }
+
+    &:focus {
+        color: $color-white;
+        background-color: $color-orange-2;
+        border-color: $color-orange-2;
+        box-shadow: 0 0 0 0;
+    }
+}
+
 .section__padding {
     padding-top: 120px;
     padding-bottom: 120px;
@@ -216,11 +263,50 @@ a:focus {
     }
 }
 
+input[type=checkbox],
+input[type=radio] {
+    position: relative;
+    appearance: none;
+    font-size: inherit;
+    width: 1em;
+    margin: 0;
+    color: $color-orange-1;
+    outline: none;
+    font-family: 'Font Awesome 5 Pro';
+    transition: 300ms ease-out;
+
+    &::after {
+        content: '\f111'; // circle
+        display: inline-block;
+        text-align: center;
+        width: 1em;
+    }
+
+    &:checked::after {
+        font-weight: 900;
+    }
+
+    &:active {
+        transform: scale(.6);
+    }
+
+    + span {
+        margin-left: .35em;
+    }
+}
+
+input[type=checkbox]:checked::after {
+    content: '\f058'; // check-circle
+}
+
+input[type=radio]:checked::after {
+    content: '\f192'; // dot-circle
+}
 
 /* Header */
 .header {
     /*position: relative;*/
-    z-index: 9999999;
+    z-index: 500;
     width: 100%;
     background-color: $color-white;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
@@ -327,6 +413,27 @@ a:focus {
         }
     }
 
+    & .user__wrap {
+        & .dropdown {
+            display: none;
+            &.active {
+                display: inline-block;
+            }
+        }
+
+        & .avatar {
+            @include setWidthHeight(50px);
+            border-radius: 50%;
+            background-color: $color-orange-1;
+            border: 1px solid $color-orange-1;
+            padding: .1rem;
+            & img {
+                @include setWidthHeight(100%);
+                border-radius: 50%;
+            }
+        }
+    }
+
     & .dropdown-menu {
         background-color: $color-white;
         padding: 0;
@@ -388,6 +495,106 @@ a:focus {
                 color: $color-white;
                 border-radius: 50%;
                 z-index: 1;
+            }
+        }
+    }
+}
+
+/* Cart */
+.cart__wrap {
+    position: fixed;
+    top: 0;
+    right: 0;
+    background-color: $color-white;
+    z-index: 9999;
+    height: 100%;
+    overflow: auto;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    transition: .3s ease-in-out;
+    transform: translateX(100%);
+
+    & .cart__content {
+        display: none;
+
+        &.active {
+            display: block;
+        }
+    }
+        
+    &.show {
+        transform: translateX(0);
+    }
+
+    & + .cart__overlay {
+        z-index: 1000;
+        display: none;
+        overflow: hidden;
+        @include setWidthHeight(100%, 100vh);
+        background-color: rgba(0, 0, 0, .4);
+        position: fixed;
+        top: 0;
+
+        &.show {
+            display: block;
+        }
+    }
+
+    & .cart {
+        position: relative;
+
+        & .summary {
+            & span {
+                color: $color-orange-1;
+            }
+        }
+
+        & .back {
+            position: absolute;
+            font-weight: bold;
+            right: 0;
+            height: auto;
+            transition: transform .3s ease-in-out;
+            padding: .5rem;
+
+            &:hover {
+                color: $color-orange-1;
+                transform: rotate(90deg);
+            }
+        }
+
+        & h1 {
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            color: $color-orange-1;
+            padding: 1rem 0;
+        }
+
+        & .list__cart {
+            & .list-group-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: stretch;
+                padding-left: 0;
+                padding-right: 0;
+                border: none;
+                border-top: 1px solid $color-line;
+
+                & h2 {
+                    font-size: 1.2rem;
+                    font-weight: 600;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    width: 100%;
+                }
+
+                & .remove {
+                    &:hover {
+                        color: $color-orange-1;
+                    }
+                }
             }
         }
     }
@@ -887,6 +1094,37 @@ a:focus {
         background-color: $color-light-pink;
     }
 
+    & .owl-nav {
+        & button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 3rem !important;
+            width: 50px;
+            height: 50px;
+            display: flex !important;
+            justify-content: center;
+            align-items: center;
+
+            & span {
+                line-height: 1;
+            }
+
+            &:hover {
+                background-color: transparent !important;
+                color: $color-orange-1 !important;
+            }
+        }
+
+        & .owl-prev {
+            left: 0;
+        }
+
+        & .owl-next {
+            right: 0;
+        }
+    }
+
     & .product__visual {
         position: relative;
 
@@ -895,10 +1133,10 @@ a:focus {
 
             & li {
                 position: relative;
-
+                height: 100vh;
                 & img {
                     width: 100%;
-                    height: auto;
+                    height: 100%;
                     object-fit: cover;
                 }
             }

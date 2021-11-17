@@ -1,0 +1,82 @@
+﻿
+.tooltip {
+    font-size: 16px;
+}
+
+.pagination {
+    justify-content: center;
+    margin: 1rem 0;
+}
+
+    .pagination li {
+        border-radius: .2rem;
+    }
+
+        .pagination li.disabled a {
+            color: #9CA3AF;
+        }
+
+        .pagination li.disabled:hover {
+            background-color: #9CA3AF;
+        }
+
+            .pagination li.disabled:hover a {
+                color: #111827;
+            }
+
+        .pagination li.active {
+            background-color: #FE5F41;
+        }
+
+            .pagination li.active a {
+                color: #fff;
+            }
+
+        .pagination li a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.3rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #111827;
+            min-width: 2rem;
+        }
+
+        .pagination li:hover {
+            background-color: #FE5F41;
+        }
+
+            .pagination li:hover a {
+                color: #fff;
+                text-decoration: none;
+            }
+
+#tableColors tbody tr.active {
+    color: #212529;
+    background-color: rgba(0,0,0,.075);
+}
+
+#ModalColor .list__img {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#ModalColor .list__img > div {
+    border: 1px solid var(--secondary);
+    width: 50px;
+    height: 50px;
+    margin-right: 2px;
+}
+
+    #ModalColor .list__img > div i {
+        right: 0px;
+        padding: 0 1px;
+        border: 1px solid #fff;
+        background-color: #fff;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    }
+
+    #ModalColor .list__img > div i:hover {
+        font-weight: bold
+    }

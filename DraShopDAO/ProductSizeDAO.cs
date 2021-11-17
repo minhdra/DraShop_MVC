@@ -21,6 +21,30 @@ namespace DraShopDAO
             return toList(dt);
         }
 
+        public void AddProductSize(ProductSize size)
+        {
+            if (size != null)
+            {
+                dh.StoreReader("AddProductSize", size._id, size.product_color_id, 
+                    size.size, size.quantity);
+            }
+        }
+
+        public void UpdateProductSize(ProductSize size)
+        {
+            if (size != null)
+            {
+                dh.StoreReader("UpdateProductSize", size._id, size.product_color_id,
+                    size.size, size.quantity);
+            }
+        }
+
+        public void DeleteProductSize(string _id)
+        {
+            string sqlQuery = "DELETE FROM dra_product_size WHERE _id='" + _id + "'";
+            dh.ExcuteNonQuery(sqlQuery);
+        }
+
         public List<ProductSize> toList(DataTable dt)
         {
             List<ProductSize> list = new List<ProductSize>();

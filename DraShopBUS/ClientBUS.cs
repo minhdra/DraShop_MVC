@@ -11,29 +11,82 @@ namespace DraShopBUS
     public class ClientBUS: IClientBUS
     {
         ICustomerDAO customerDAO = new CustomerDAO();
+        ICartDAO cartDAO = new CartDAO();
+        ICartDetailDAO cartDetailDAO = new CartDetailDAO();
 
+        // Register customer
         public bool Register(Customer customer)
         {
             if (CheckUniqueUsername(customer.username)) return false;
-            string id = GenerateId();
+            string id = GenerateCustomerId();
             customer._id = id;
             customer.status = 0;
             customer.information = null;
             customerDAO.Register(customer);
             return true;
         }
-
+        // Login customer
         public Customer Login(string username, string password)
         {
             return customerDAO.Login(username, password);
         }
-
+        // Get all customer
         public List<Customer> GetCustomers()
         {
             return customerDAO.GetCustomers();
         }
-
-        private string GenerateId()
+        // Get cart by customer id
+        public Cart GetCart(string customer_id)
+        {
+            return cartDAO.GetCart(customer_id);
+        }
+        // Get all cart
+        public List<Cart> GetCarts()
+        {
+            return cartDAO.GetCarts();
+        }
+        // Get list cart detail
+        public List<CartDetail> GetCartDetails(string cart_id)
+        {
+            return cartDetailDAO.GetCartDetails(cart_id);
+        }
+        // Create cart
+        public void CreateCart(Cart cart, CartDetail cartDetail)
+        {
+            if(!CheckCart(cart.customer_id))
+            {
+                string _id = GenerateCartId();
+                cart._id = _id;
+                cartDetail.cart_id = _id;
+                cart.ListCartDetail = null;
+                cartDAO.CreateCart(cart);
+                CreateCartDetail(cartDetail);
+            }
+            else
+            {
+                Cart c = GetCart(cart.customer_id);
+                CartDetail cd = CheckCartDetail(cartDetail.product_id, c._id);
+                cartDetail.cart_id = c._id;
+                if(cd == null)
+                {
+                    CreateCartDetail(cartDetail);
+                }
+                else
+                {
+                    cartDetail._id = cd._id;
+                    UpdateCartDetail(cartDetail);
+                }
+            }
+        }
+        // Create cart detail
+        public void CreateCartDetail(CartDetail cartDetail)
+        {
+            if (cartDetail == null) return;
+            cartDetail._id = GenerateCartDetailId();
+            cartDetailDAO.CreateCartDetail(cartDetail);
+        }
+        // Generate customer id
+        private string GenerateCustomerId()
         {
             Random ran = new Random();
             int number = ran.Next(1, 100);
@@ -51,6 +104,54 @@ namespace DraShopBUS
             }
             return id;
         }
+        // Update Cart Detail
+        public void UpdateCartDetail(CartDetail cartDetail)
+        {
+            cartDetailDAO.UpdateCartDetail(cartDetail);
+        }
+        // Delete Cart Detail
+        public void DeleteCartDetail(string _id)
+        {
+            cartDetailDAO.DeleteCartDetail(_id);
+        }
+        // Generate cart id
+        private string GenerateCartId()
+        {
+            Random ran = new Random();
+            int number = ran.Next(1, 100);
+            string id = "C" + number;
+            List<Cart> list = GetCarts();
+            if (list == null) return id;
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[0]._id.Trim() == id)
+                {
+                    number = ran.Next(1, 100);
+                    id = "C" + number;
+                    i--;
+                }
+            }
+            return id;
+        }
+        // Generate cart detail id
+        private string GenerateCartDetailId()
+        {
+            Random ran = new Random();
+            int number = ran.Next(1, 100);
+            string id = "CD" + number;
+            List<CartDetail> list = GetCartDetails("");
+            if (list == null) return id;
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[0]._id.Trim() == id)
+                {
+                    number = ran.Next(1, 100);
+                    id = "CD" + number;
+                    i--;
+                }
+            }
+            return id;
+        }
 
         private bool CheckUniqueUsername(string username)
         {
@@ -61,6 +162,22 @@ namespace DraShopBUS
                 if (item.username.Trim() == username) return true;
             }
             return false;
+        }
+
+        private bool CheckCart(string customer_id)
+        {
+            Cart cart = GetCart(customer_id);
+            if (cart == null) return false;
+            return true;
+        }
+        private CartDetail CheckCartDetail(string product_id, string cart_id)
+        {
+            List<CartDetail> list = GetCartDetails(cart_id);
+            foreach(var item in list)
+            {
+                if (item.product_id == product_id) return item;
+            }
+            return null;
         }
     }
 }

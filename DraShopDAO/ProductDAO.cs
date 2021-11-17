@@ -39,18 +39,38 @@ namespace DraShopDAO
             return toList(dt);
         }
 
-        public List<Product> GetProduct(string id)
+        public Product GetProduct(string id)
         {
             DataTable dt = dh.GetDataTable("select * from dra_product where _id='" + id + "'");
-            return toList(dt);
+            return toList(dt).Count > 0 ? toList(dt)[0] : null;
+        }
+
+        public void AddProduct(Product product)
+        {
+            dh.StoreReader("AddProduct", product._id, product.name, product.description,
+                product.category_id, product.made_in, product.gender, product.brand,
+                product.style_id, product.status, product.image_avatar, product.summary);
+        }
+
+        public void UpdateProduct(Product product)
+        {
+            dh.StoreReader("UpdateProduct", product._id, product.name, product.description,
+               product.category_id, product.made_in, product.gender, product.brand,
+               product.style_id, product.status, product.image_avatar, product.summary);
+        }
+
+        public void DeleteProduct(string product_id)
+        {
+            string sqlQuery = "DELETE FROM dra_product WHERE _id='" + product_id + "'";
+            dh.ExcuteNonQuery(sqlQuery);
         }
 
         public ProductList ProductsList(string category_id, int pageIndex, int pageSize, string productName)
         {
             ProductList list = new ProductList();
             List<Product> l = new List<Product>();
-            ProductColorDAO colorDAO = new ProductColorDAO();
-            ProductPriceDAO priceDAO = new ProductPriceDAO();
+            IProductColorDAO colorDAO = new ProductColorDAO();
+            IProductPriceDAO priceDAO = new ProductPriceDAO();
             SqlDataReader dr = dh.StoreReader("GetProductsByPage", category_id, pageIndex, pageSize, productName);
             while(dr.Read())
             {
@@ -76,13 +96,15 @@ namespace DraShopDAO
 
         public List<Product> toList(DataTable dt)
         {
-            ProductColorDAO color = new ProductColorDAO();
-            ProductPriceDAO price = new ProductPriceDAO();
+            IProductColorDAO color = new ProductColorDAO();
+            IProductPriceDAO price = new ProductPriceDAO();
             List<Product> list = new List<Product>();
             foreach(DataRow row in dt.Rows)
             {
                 List<ProductColor> ListColor = color.GetProductColorsByProduct(row[0].ToString().Trim());
                 ProductPrice prodPrice = price.GetProductPrice(row[0].ToString().Trim());
+                prodPrice.date_effect = prodPrice.date_effect.ToString();
+                prodPrice.date_expired = prodPrice.date_expired.ToString();
                 Product prod = new Product(
                     row[0].ToString(), row[1].ToString(),
                     row[2].ToString(), row[3].ToString(),

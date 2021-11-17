@@ -10,7 +10,7 @@ namespace DraShop_MVC.Controllers
 {
     public class DetailController : Controller
     {
-        ManageProductBUS prodBUS = new ManageProductBUS();
+        IManageProductsBUS prodBUS = new ManageProductBUS();
 
 
         public ActionResult Index(string id)
@@ -26,8 +26,8 @@ namespace DraShop_MVC.Controllers
 
         public JsonResult GetProduct(string id)
         {
-            List<Product> list = prodBUS.GetProduct(id);
-            return Json(new { products = list }, JsonRequestBehavior.AllowGet);
+            Product product = prodBUS.GetProduct(id);
+            return Json(product, JsonRequestBehavior.AllowGet);
         }
     }
 }

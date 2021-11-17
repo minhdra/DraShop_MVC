@@ -32,7 +32,29 @@ async function MenuController($scope, $rootScope, $http) {
     );
 
     $scope.selectCategory = (id, name) =>
-        { localStorage.setItem('selectedCate', JSON.stringify({ id, name })) };
+    { localStorage.setItem('selectedCate', JSON.stringify({ id, name })) };
+
+    $scope.toggleCart = () => {
+        $('.cart__wrap').addClass('show');
+        $('.cart__overlay').addClass('show');
+        $('body').css('overflow', 'hidden');
+    }
+
+    $scope.signOut = () => {
+        localStorage.removeItem('customer');
+        window.location.reload();
+    }
+
+    //
+    const customer = JSON.parse(localStorage.getItem('customer'));
+    if (customer) {
+        $('.user__wrap .dropdown').removeClass('active');
+        $('.user__wrap .profile').addClass('active');
+    }
+    else {
+        $('.user__wrap .dropdown').removeClass('active');
+        $('.user__wrap .user').addClass('active');
+    }
 }
 
 // Get Product
@@ -44,7 +66,7 @@ async function ProductController($rootScope, $scope, $http) {
     header.addClass('hasBg');
 
     // Sort
-    $rootScope.sortColumn = '';
+    $rootScope.sortColumn = '_id';
     $rootScope.reverse = true;
     $rootScope.direct = 'Ascending'; // or Descending
     $scope.SortBy = () => {
@@ -64,7 +86,7 @@ async function ProductController($rootScope, $scope, $http) {
     // Get items
     // pagination
     $scope.maxSize = 3;
-    $scope.totalCount = 0;
+    $rootScope.totalCount = 0;
     $scope.pageIndex = 1;
     $scope.pageSize = 9;
     $scope.keyword = '';
@@ -73,7 +95,7 @@ async function ProductController($rootScope, $scope, $http) {
     if (categorySelected) {
         $scope.selectedName = categorySelected.name;
         $scope.GetProuducts = async (index) => {
-            console.log(index);
+            //console.log(index);
             const urlPage = '/Product/GetProductsPagination';
             const options = {
                 category_id: categorySelected.id.trim(),
@@ -86,9 +108,9 @@ async function ProductController($rootScope, $scope, $http) {
                 url: urlPage,
                 params: options
             }).then(response => {
-                console.log(response.data.listProducts);
+                //console.log(response.data.listProducts);
                 $scope.products = response.data.listProducts;
-                $scope.totalCount = response.data.totalCount;
+                 $rootScope.totalCount = response.data.totalCount;
             }, reject => console.log(reject));
         }
         $scope.GetProuducts($scope.pageIndex);
@@ -124,6 +146,91 @@ async function ProductController($rootScope, $scope, $http) {
         sessionStorage.setItem('selectedProduct', id);
 }
 
+// Cart
+app.controller('CartController', CartController);
+async function CartController($rootScope, $scope, $http) {
+    // init
+    $rootScope.totalItems = 0;
+     $rootScope.total = 0;
+    const cartContent = $('.cart__content');
+    const customer = JSON.parse(localStorage.getItem('customer'));
+    let listCart;
+    //console.log(customer);
+    // function
+    $scope.close = () => {
+        $('.cart__wrap').removeClass('show');
+        $('.cart__overlay').removeClass('show');
+        $('body').css('overflow', 'auto');
+    }
+
+    const urlGetCarts = '/Cart/GetCart';
+
+    if (customer) {
+        await $http({
+            method: 'GET',
+            url: urlGetCarts,
+            params: { customer_id: customer._id.trim() }
+        }).then(response => {
+             $rootScope.cart = response.data.cart;
+            listCart =  $rootScope.cart.ListCartDetail;
+            $rootScope.totalItems = listCart.length;
+        });
+        calcTotal();
+    }
+    
+    function calcTotal() {
+        listCart.forEach(function (item) {
+                if (item.status === 1)
+                     $rootScope.total += item.price * item.quantity;
+        })
+    }; 
+    function calcAgain() {
+         $rootScope.total = 0;
+        $http({
+            method: 'GET',
+            url: urlGetCarts,
+            params: { customer_id: customer._id.trim() }
+        }).then(response => {
+            listCart = response.data.cart.ListCartDetail;
+            calcTotal();
+        }, reject => console.log(reject))
+    };
+
+
+    $scope.calcTotal = async function (item, quantity) {
+        item.quantity = quantity;
+        const urlUpdate = '/Cart/UpdateCartDetail';
+        await $http({
+            method: 'POST',
+            url: urlUpdate,
+            data: { cartDetail: item }
+        }).then(response => console.log(response.status));
+        calcAgain();
+    };
+
+    $scope.remove = function ($event, item) {
+        const urlDelete = '/Cart/DeleteCartDetail';
+        $($event.currentTarget).parents('li').remove();
+        $http({
+            method: 'POST',
+            url: urlDelete,
+            params: { _id: item._id.trim() },
+        }).then(response => console.log(response.status));
+        $rootScope.totalItems -= 1;
+        calcAgain();
+    };
+
+    if (!customer || ! $rootScope.cart) {
+        cartContent.removeClass('active');
+        $(cartContent.get(0)).addClass('active');
+    }
+    else {
+        
+        cartContent.removeClass('active');
+        $(cartContent.get(1)).addClass('active');
+    }
+}
+
 // Slideshow
 app.controller('SlideShowController', SlideShowController);
 async function SlideShowController($scope, $http) {
@@ -138,7 +245,7 @@ async function SlideShowController($scope, $http) {
     // Set up slider
     function setupSlider() {
         $('.slideshow .owl-carousel').owlCarousel({
-            //autoplay: true,
+            autoplay: true,
             loop: true,
             responsiveClass: true,
             dots: false,
@@ -175,7 +282,6 @@ function ClientSlideController($rootScope, $scope, $http) {
             reject => console.log(reject));
 
         function setupSlider() {
-            console.log('a');
             $('.products__wrapper.owl-carousel').owlCarousel({
                 margin: 20,
                 autoplay: true,
@@ -208,50 +314,101 @@ app.controller('DetailController', DetailController);
 function DetailController($rootScope, $scope, $http) {
     angular.element(document).ready(async function () {
         // init
+        const customer = JSON.parse(localStorage.getItem('customer'));
         $scope.index = 0;
         $scope.indexSize = 0;
-        $scope.clickMenuColor = () => {
-            
-        }
-        $scope.changeColor = async (index) => {
-            console.log($scope.indexSize);
+
+        $scope.changeColor = async (index, color) => {
+            $scope.selectedColor = color;
+            //console.log($scope.indexSize);
             if (index === $scope.index) return;
             $('.list-color > div').removeClass('active');
             $(`.list-color > div:nth-child(${index + 1})`).addClass('active');
-            $('.slick-list').remove();
-            $('.slick-slider').slick('unslick');
+            //$('.slick-list').remove();
+            $('.owl-carousel').owlCarousel('destroy');
             $scope.index = index;
-            $('.product__visual__list').addClass('slick-slider');
+            $('.product__visual__list').addClass('owl-carousel');
             await setTimeout(setupSlider, 500);
             $(`.product__details-size li:nth-child(${$scope.indexSize + 1})`).addClass('active');
             checkStock();
             //setupSlider()
         }
-        $scope.changeSize = (index, quantity) => {
+
+        $scope.changeSize = (index, quantity, size) => {
+            $scope.selectedQuantity = quantity;
+            $scope.selectedSize = size;
             index === $scope.indexSize ? null : $scope.indexSize = index;
             $('.product__details-size li').removeClass('active');
             $(`.product__details-size li:nth-child(${index + 1})`).addClass('active');
             checkStock();
         }
+
+        $scope.addToCart = async (product_id, price, image, name) => {
+            //console.log(product_id, price, image, name, $scope.selectedColor, $scope.selectedQuantity,
+            //    $scope.selectedSize);
+            const urlAddToCart = '/Cart/AddToCart';
+            if ($scope.selectedQuantity === 0) {
+                //do something 
+            }
+            else {
+                const date = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
+                const cart = { _id: "", customer_id: customer._id };
+                const cartDetail = {
+                    _id: "",
+                    cart_id: "",
+                    product_id,
+                    quantity: 1,
+                    price,
+                    date_create: date,
+                    status: 1,
+                    size: $scope.selectedSize,
+                    color: $scope.selectedColor,
+                    image,
+                    name,
+                }
+                $rootScope.totalItems += 1;
+                await $http({
+                    method: 'POST',
+                    url: urlAddToCart,
+                    data: { cart, cartDetail }
+                }).then(response => console.log(response.status));
+                if (customer) {
+                    await $http({
+                        method: 'GET',
+                        url: '/Cart/GetCart',
+                        params: { customer_id: customer._id.trim() }
+                    }).then(response => {
+                        $rootScope.cart = response.data.cart;
+                        $rootScope.totalItems =  $rootScope.cart.ListCartDetail.length;
+                        $rootScope.cart.ListCartDetail.forEach(function (item) {
+                            if (item.status === 1)
+                                $rootScope.total += item.price * item.quantity;
+                        });
+                    });
+                }
+            }
+        }
+
         // Set padding, css
         const main = $('.product__details__wrapper');
         main.css('padding-top', heightHeader);
         header.addClass('hasBg');
         
         // Config slider for visual
+        // Set up slider
         function setupSlider() {
-            jQuery('.slick-slider').not('.slick-initialized').slick({
-                infinite: true,
+            $('.product__visual__list.owl-carousel').owlCarousel({
                 autoplay: true,
-                //dots: true,
-                slidesToShow: 1,
-                slidesToScroll: 1,
-                arrows: true,
-                prevArrow: $('.btn-slide-prev'),
-                nextArrow: $('.btn-slide-next'),
-                speed: 500,
-            })
+                loop: true,
+                responsiveClass: true,
+                dots: false,
+                nav: true,
+                items: 1,
+                singleItem: true,
+                autoplayHoverPause: true,
+            });
         };
+        //setupSlider();
         await setTimeout(setupSlider, 500);
 
         // Get Product
@@ -262,6 +419,7 @@ function DetailController($rootScope, $scope, $http) {
             method: 'get'
         }).then(response => {
             $scope.product = response.data.products[0];
+            //console.log($scope.product);
             const color = [];
             $scope.product.ListColor.forEach((item, index) => {
                 color.push({ color: item.color, hex: item.hex, image: [], size: [] });
@@ -311,9 +469,11 @@ function DetailController($rootScope, $scope, $http) {
             })
         }
         checkStock();
-        
 
-        //console.log($scope.color);
+        console.log($scope.color);
+        $scope.selectedColor = $scope.color.color_list[0].color;
+        $scope.selectedSize = $scope.color.color_list[0].size[0].size;
+        $scope.selectedQuantity = $scope.color.color_list[0].size[0].quantity;
         //console.log($scope.color.color_list[0].image);
         //console.log($scope.color.color_list);
     })
@@ -344,13 +504,17 @@ async function RegisterController($scope, $http) {
                 response => {
                     //$('.alert').removeClass('show');
                     if (response.data.customer) {
+                        $('.alert-danger').removeClass('show').hide();
                         $('.alert-success').addClass('show').show();
                         $scope.customer = response.data.customer;
-                        $scope.success = 'You register successful.'
+                        $scope.success = 'You register successful.';
+                        setTimeout(() => $('.alert-success').removeClass('show').hide(), 3000);
                     }
                     else {
+                        $('.alert-success').removeClass('show').hide();
                         $('.alert-danger').addClass('show').show();
                         $scope.failure = 'Your username already exists!';
+                        setTimeout(() => $('.alert-danger').removeClass('show').hide(), 3000);
                     }
                 },
                 reject => console.log(reject));
@@ -360,7 +524,12 @@ async function RegisterController($scope, $http) {
 
 // Login
 app.controller('LoginController', LoginController);
-function LoginController($scope, $http) {
+function LoginController($rootScope, $scope, $http) {
+    $scope.close = "";
+
+    $scope.login = 0;
+    $rootScope.remember = false;
+
     $scope.Login = async function (username, password) {
         var input = $('.validate-input .input100');
         let check = true;
@@ -374,13 +543,19 @@ function LoginController($scope, $http) {
         if (check) {
             const url = '/Customer/GetCustomer';
             await $http({
-                method: 'Get',
+                method: 'GET',
                 url,
-                dataType: 'json',
                 params: { username, password },
             })
                 .then(async response => {
-                    if (response.data.customer) {
+                    if (response.data.login == "0") {
+                        $('.alert-success').removeClass('show').hide();
+                        $('.alert-danger').addClass('show').show();
+                        $scope.failure = 'Username or password not correct!';
+                        setTimeout(() => $('.alert-danger').removeClass('show').hide(), 3000);
+                    }
+                    else {
+                        $('.alert-danger').removeClass('show').hide();
                         $('.alert-success').addClass('show').show();
                         $scope.customer = response.data.customer;
                         $scope.success = 'Login success.';
@@ -388,14 +563,25 @@ function LoginController($scope, $http) {
                         await setTimeout(() => {
                             $('.alert-success').removeClass('show').hide();
                             window.open('/', '_parent');
-                           
-                        }, 3000);
+                        }, 2000);
                     }
-                    else {
-                        $('.alert-danger').addClass('show').show();
-                        $scope.failure = 'Username or password not correct!';
-                        setTimeout(() => $('.alert-danger').removeClass('show').hide(), 3000);
-                    }
+                    //if (response.data.customer) {
+                    //    $('.alert-danger').removeClass('show').hide();
+                    //    $('.alert-success').addClass('show').show();
+                    //    $scope.customer = response.data.customer;
+                    //    $scope.success = 'Login success.';
+                    //    localStorage.setItem('customer', JSON.stringify($scope.customer));
+                    //    await setTimeout(() => {
+                    //        $('.alert-success').removeClass('show').hide();
+                    //        window.open('/', '_parent');
+                    //    }, 2000);
+                    //}
+                    //else {
+                    //    $('.alert-success').removeClass('show').hide();
+                    //    $('.alert-danger').addClass('show').show();
+                    //    $scope.failure = 'Username or password not correct!';
+                    //    setTimeout(() => $('.alert-danger').removeClass('show').hide(), 3000);
+                    //}
                 },
                 reject => console.log(reject));
         }
@@ -457,6 +643,5 @@ function hideValidate(input) {
 $('.close').on('click', function () {
     $(this).parent().removeClass('show').hide();
 });
-
 
 

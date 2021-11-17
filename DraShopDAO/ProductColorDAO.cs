@@ -11,7 +11,7 @@ namespace DraShopDAO
     public class ProductColorDAO: IProductColorDAO
     {
         DataHelper dh = new DataHelper();
-        ProductSizeDAO sizeDAO = new ProductSizeDAO();
+        IProductSizeDAO sizeDAO = new ProductSizeDAO();
 
         public List<ProductColor> GetProductColorsByProduct(string product_id)
         {
@@ -20,6 +20,35 @@ namespace DraShopDAO
                 "select * from dra_product_color";
             DataTable dt = dh.GetDataTable(sqlQuery);
             return toList(dt);
+        }
+
+        public List<ProductColor> GetProductColors()
+        {
+            string sqlQuery = "Select * from dra_product_color";
+            DataTable dt = dh.GetDataTable(sqlQuery);
+            return toList(dt);
+        }
+
+        public void AddProductColor(ProductColor color)
+        {
+            if(color != null)
+            {
+                dh.StoreReader("AddProductColor", color._id, color.product_id, color.image, color.color, color.hex);
+            }
+        }
+
+        public void UpdateProductColor(ProductColor color)
+        {
+            if (color != null)
+            {
+                dh.StoreReader("UpdateProductColor", color._id, color.product_id, color.image, color.color, color.hex);
+            }
+        }
+
+        public void DeleteProductColor(string _id)
+        {
+            string sqlQuery = "DELETE FROM dra_product_color WHERE _id='" + _id + "'";
+            dh.ExcuteNonQuery(sqlQuery);
         }
 
         public List<ProductColor> toList(DataTable dt)

@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using DraShopOBJ;
 using DraShopBUS;
+using Newtonsoft.Json;
 
 namespace DraShop_MVC.Controllers
 {
@@ -40,7 +41,26 @@ namespace DraShop_MVC.Controllers
         public JsonResult GetCustomer(string username, string password)
         {
             Customer customer = client.Login(username, password);
-            return Json(new { customer = customer }, JsonRequestBehavior.AllowGet);
+            //if (!remenber) customer.password = "";
+            if(customer == null)
+            {
+                Session["login"] = "0";
+                Session["customer"] = "";
+            }
+            else
+            {
+                Session["login"] = "1";
+                Session["customer"] = JsonConvert.SerializeObject(customer);
+                Session.Timeout = 360;
+            }
+            return Json(new { login = Session["login"], customer = customer }, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult Logout ()
+        {
+            Session.Remove("login");
+            Session.Remove("customer");
+            return Json(0, JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -1,0 +1,285 @@
+﻿
+@{
+    ViewBag.Title = "Manage products";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper" ng-controller="ManageProducts">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Manage Products</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/Admin/HomeAdmin/Index">Home</a></li>
+                        <li class="breadcrumb-item active">Manage products</li>
+                    </ol>
+                </div>
+            </div>
+            <button class="btn btn-danger btn-sm" data-toggle="modal"
+                    data-target="#clickMe"
+                    ng-click="addProduct(0)">
+                Add Product
+            </button>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card text-center">
+                        <div class="card-header d-flex justify-content-between">
+                            <div class="d-flex w-25 justify-content-between">
+                                <select class="form-control form-control-sm mr-2"
+                                        ng-model="selectedValue"
+                                        ng-change="SortBy()">
+                                    <option value="" selected>Select field</option>
+                                    <option value="_id">Id</option>
+                                    <option value="name">Name</option>
+                                    <option value="category_id">Category id</option>
+                                    <option value="made_in">Made in</option>
+                                    <option value="brand">Brand</option>
+                                    <option value="gender">Gender</option>
+                                    <option value="desciption">Description</option>
+                                    <option value="summary">Summary</option>
+                                    <option value="style_id">Style id</option>
+                                    <option value="status">Status</option>
+                                </select>
+                                <select class="form-control form-control-sm"
+                                        ng-model="selectedSort"
+                                        ng-change="SortBy()">
+                                    <option value="" selected>Select sort</option>
+                                    <option value="Ascending">Ascending</option>
+                                    <option value="Descending">Descending</option>
+                                </select>
+                            </div>
+                            <div class="w-75 text-right">Total: {{totalCount}}</div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive">
+                            <table id="productsTable" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>C-Id</th>
+                                        <th>Name</th>
+                                        <th>Image</th>
+                                        <th>Made</th>
+                                        <th>Brand</th>
+                                        <th>Gender</th>
+                                        <th>Description</th>
+                                        <th>Summary</th>
+                                        <th>S-Id</th>
+                                        <th>Status</th>
+                                        <th>Tools</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr dir-paginate="item in products | orderBy:sortColumn:reverse | itemsPerPage:pageSize"
+                                        total-items="totalCount"
+                                        ng-click="goDetails($event, item)"
+                                        data-href="/Admin/ManageProducts/ProductDetails">
+                                        
+                                        <td>{{item._id}}</td>
+                                        <td>{{item.category_id}}</td>
+                                        <td title="{{item.name}}"
+                                            data-tooltips="tooltip"
+                                            data-placement="bottom">
+                                            <p style="white-space: nowrap;
+                                                    text-overflow: ellipsis;
+                                                    overflow: hidden;
+                                                    width: 90px;
+                                                    ">{{item.name}}</p>
+                                        </td>
+                                        <td style="width: 75px; height: 75px; object-fit: cover">
+                                            <img class="w-100 h-100" ng-src="{{item.image_avatar}}" />
+                                        </td>
+                                        <td>{{item.made_in}}</td>
+                                        <td>{{item.brand}}</td>
+                                        <td>{{item.gender}}</td>
+                                        <td title="{{item.description}}"
+                                            data-tooltips="tooltip"
+                                            data-placement="bottom">
+                                            <p style="white-space: nowrap;
+                                                    text-overflow: ellipsis;
+                                                    overflow: hidden;
+                                                    width: 90px;
+                                                    ">{{item.description}}</p>
+                                        </td>
+                                        <td title="{{item.summary}}"
+                                            data-tooltips="tooltip"
+                                            data-placement="bottom">
+                                            <p style="white-space: nowrap;
+                                                    text-overflow: ellipsis;
+                                                    overflow: hidden;
+                                                    width: 90px;
+                                                    ">{{item.summary}}</p>
+                                        </td>
+                                        <td>{{item.style_id}}</td>
+                                        <td>{{item.status}}</td>
+                                        <td class="d-flex justify-content-between">
+                                            <i class="p-1 fal fa-edit" role="button"
+                                               data-toggle="modal" data-target="#clickMe"
+                                               ng-click="editProduct(item, 1)"></i>
+                                            <i class="p-1 fal fa-times"
+                                               data-toggle="modal"
+                                               role="button"
+                                               data-target="#confirmForm"
+                                               ng-click="removeProduct(item)"> </i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                        <dir-pagination-controls max-size="maxSize"
+                                                 direction-links="true"
+                                                 boundary-links="true"
+                                                 on-page-change="GetProuducts(newPageNumber)"></dir-pagination-controls>
+                    </div>
+                    <!-- /.card -->
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+    <!-- Button trigger modal -->
+    <!-- Modal -->
+    <div class="modal fade" id="clickMe" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{title}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table id="example2" class="table table-bordered table-hover">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <label for="id">Id</label>
+                                    <input id="id" class="form-control" ng-model="product._id" disabled />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Category</label>
+                                    <select class="custom-select" ng-model="product.category_id">
+                                        <option ng-repeat="item in categories"
+                                                value="{{item._id}}"
+                                                style="text-transform: capitalize;">{{item.name}}</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="name">Name</label>
+                                    <input id="name" class="form-control" ng-model="product.name" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div>
+                                        <img class="w-100" ng-src="{{product.image_avatar}}" />
+                                    </div>
+                                    <label for="image">Image</label>
+                                    <input id="image" class="form-control" ng-model="product.image_avatar" 
+                                           placeholder="Link image"/>
+                                    or
+                                    @*<input type="file" class="form-control-file" ngf-select="UploadFiles($file)"/>*@
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="made_in">Made in</label>
+                                    <input id="made_in" class="form-control" ng-model="product.made_in" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="brand">Brand</label>
+                                    <input id="brand" class="form-control" ng-model="product.brand" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="gender">Gender</label>
+                                    <input id="gender" class="form-control" ng-model="product.gender" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="desc">Description</label>
+                                    <input id="desc" class="form-control" ng-model="product.description" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="summary">Summary</label>
+                                    <input id="summary" class="form-control" ng-model="product.summary" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="style_id">Style Id</label>
+                                    <input id="style_id" class="form-control" ng-model="product.style_id" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="status">Status</label>
+                                    <input id="status" class="form-control" ng-model="product.status" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger"
+                            ng-click="save(product, event)">
+                        Save changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="confirmForm" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel2">
+                        Confirm your action
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Do you want continue to delete this product?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger"
+                            ng-click="confirmDelete()">
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.content-wrapper -->

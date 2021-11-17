@@ -15,6 +15,8 @@ namespace DraShopOBJ
         public string hex { get; set; }
         public List<ProductSize> ListSize { get; set; }
 
+        public ProductColor() { }
+
         public ProductColor (string _id, string product_id, 
             string image, string color, string hex,
             List<ProductSize> ListSize)

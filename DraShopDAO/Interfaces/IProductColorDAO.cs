@@ -10,5 +10,9 @@ namespace DraShopDAO
     public interface IProductColorDAO
     {
         List<ProductColor> GetProductColorsByProduct(string product_id);
+        List<ProductColor> GetProductColors();
+        void AddProductColor(ProductColor color);
+        void UpdateProductColor(ProductColor color);
+        void DeleteProductColor(string _id);
     }
 }

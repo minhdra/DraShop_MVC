@@ -20,9 +20,9 @@ namespace DraShop_MVC
             );
 
             routes.MapRoute(
-                name: "Details",
+                name: "HomeAdmin",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Detail", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "HomeAdmin", action = "Index", id = UrlParameter.Optional }
             );
         }
     }

@@ -1,0 +1,422 @@
+﻿
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper" ng-controller="ManageProductDetails">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Manage Products</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/Admin/ManageProducts/Index">Manage products</a></li>
+                        <li class="breadcrumb-item active">Product details</li>
+                    </ol>
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- col -->
+                <div class="col-12 col-lg-6">
+                    <div class="card text-center">
+                        <div class="card-header d-flex justify-content-between">
+                            <div class="d-flex w-50 justify-content-between">
+                                <select class="form-control form-control-sm mr-2"
+                                        ng-model="selectedValue"
+                                        ng-change="SortBy()">
+                                    <option value="" selected>Select field</option>
+                                    <option value="_id">Id</option>
+                                    <option value="category_id">Product id</option>
+                                    <option value="brand">Color</option>
+                                    <option value="gender">Image</option>
+                                    <option value="desciption">Hex</option>
+                                </select>
+                                <select class="form-control form-control-sm"
+                                        ng-model="selectedSort"
+                                        ng-change="SortBy()">
+                                    <option value="" selected>Select sort</option>
+                                    <option value="Ascending">Ascending</option>
+                                    <option value="Descending">Descending</option>
+                                </select>
+                            </div>
+                            <div class="w-50 text-right">
+                                <button class="btn btn-danger btn-sm" data-toggle="modal"
+                                        data-target="#ModalColor"
+                                        ng-click="addColor(0)">
+                                    Add color
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive">
+                            <table id="tableColors" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Product id</th>
+                                        <th>Color</th>
+                                        <th>Images</th>
+                                        <th>Hex</th>
+                                        <th>Tools</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr dir-paginate="item in colors | orderBy:sortColumn:reverse | itemsPerPage:pageSize"
+                                        total-items="totalCount"
+                                        ng-click="showSize(item._id)">
+
+                                        <td>{{item._id}}</td>
+                                        <td>{{product._id}}</td>
+                                        <td>
+                                            {{item.color}}
+                                        </td>
+                                        <td>
+                                            <ul class="owl-carousel owl-theme list-group"
+                                                style="width: 75px; height: 75px;">
+                                                <li class="list-group-item p-0"
+                                                    ng-repeat="img in item.image"
+                                                    style="width: 75px; height: 75px;">
+                                                    <img class="w-100 h-100" ng-src="{{img}}"
+                                                         style="object-fit: cover;" />
+                                                </li>
+                                            </ul>
+                                        </td>
+                                        <td>{{item.hex}}</td>
+                                        <td class="d-flex justify-content-between">
+                                            <i class="p-1 fal fa-edit" role="button"
+                                               data-toggle="modal" data-target="#ModalColor"
+                                               ng-click="editColor(item, 1)"></i>
+                                            <i class="p-1 fal fa-times"
+                                               data-toggle="modal"
+                                               role="button"
+                                               data-target="#confirmForm"
+                                               ng-click="removeColor(item)"> </i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                        <dir-pagination-controls max-size="maxSize"
+                                                 direction-links="true"
+                                                 boundary-links="true"
+                                                 on-page-change="GetProuducts(newPageNumber)"></dir-pagination-controls>
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+                <!-- col -->
+                <div class="col-12 col-lg-6">
+                    <div class="card text-center">
+                        <div class="card-header d-flex justify-content-between">
+                            <div class="d-flex w-50 justify-content-between">
+                                <select class="form-control form-control-sm mr-2"
+                                        ng-model="selectedValue"
+                                        ng-change="SortBy()">
+                                    <option value="" selected>Select field</option>
+                                    <option value="_id">Id</option>
+                                    <option value="name">Name</option>
+                                    <option value="category_id">Category id</option>
+                                    <option value="made_in">Made in</option>
+                                    <option value="brand">Brand</option>
+                                    <option value="gender">Gender</option>
+                                    <option value="desciption">Description</option>
+                                    <option value="summary">Summary</option>
+                                    <option value="style_id">Style id</option>
+                                    <option value="status">Status</option>
+                                </select>
+                                <select class="form-control form-control-sm"
+                                        ng-model="selectedSort"
+                                        ng-change="SortBy()">
+                                    <option value="" selected>Select sort</option>
+                                    <option value="Ascending">Ascending</option>
+                                    <option value="Descending">Descending</option>
+                                </select>
+                            </div>
+                            <div class="w-50 text-right">
+                                <button class="btn btn-danger btn-sm" data-toggle="modal"
+                                        data-target="#ModalSize"
+                                        ng-click="addSize(0)">
+                                    Add size
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive">
+                            <table id="example2" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Color id</th>
+                                        <th>Size</th>
+                                        <th>Quantity</th>
+                                        <th>Tools</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr dir-paginate="item in colors[index].size | orderBy:sortColumn:reverse | itemsPerPage:pageSize"
+                                        total-items="totalCount">
+
+                                        <td>{{item._id}}</td>
+                                        <td>{{item.color_id}}</td>
+                                        <td>
+                                            {{item.size}}
+                                        </td>
+                                        <td>{{item.quantity}}</td>
+                                        <td class="d-flex justify-content-between">
+                                            <i class="p-1 fal fa-edit" role="button"
+                                               data-toggle="modal" data-target="#ModalSize"
+                                               ng-click="editSize(item, 1)"></i>
+                                            <i class="p-1 fal fa-times"
+                                               data-toggle="modal"
+                                               role="button"
+                                               data-target="#confirmForm"
+                                               ng-click="removeSize(item)"> </i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                        <dir-pagination-controls max-size="maxSize"
+                                                 direction-links="true"
+                                                 boundary-links="true"
+                                                 on-page-change="GetProuducts(newPageNumber)"></dir-pagination-controls>
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+                <!-- col -->
+                <div class="col-12">
+                    <div class="card text-center">
+                        <div class="card-header d-flex justify-content-between">
+                            <div class="d-flex w-50 justify-content-between">
+                                Datable of price
+                            </div>
+                            <div class="w-50 text-right">
+                                <button class="btn btn-danger btn-sm" data-toggle="modal"
+                                        data-target="#clickMe"
+                                        ng-click="addProduct(0)">
+                                    Add price
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Product id</th>
+                                        <th>Price</th>
+                                        <th>Date effect</th>
+                                        <th>Date expired</th>
+                                        <th>Tools</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{{product.price._id}}</td>
+                                        <td>{{product._id}}</td>
+                                        <td>
+                                            {{product.price.price_current}}
+                                        </td>
+                                        <td>{{product.price.date_effect}}</td>
+                                        <td>{{product.price.date_expired}}</td>
+                                        <td class="d-flex justify-content-between">
+                                            <i class="p-1 fal fa-edit" role="button"
+                                               ng-click="editPrice(product.price, 1)"></i>
+                                            <i class="p-1 fal fa-times"
+                                               role="button"
+                                               ng-click="removePrice(product.price)"> </i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+    <!-- Button trigger modal -->
+    <!-- Modal Color -->
+    <div class="modal fade" id="ModalColor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{ColorTitle}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table id="example2" class="table table-bordered table-hover">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <label for="id">Id</label>
+                                    <input id="id" class="form-control" ng-model="color._id" disabled />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="product_id">Product id</label>
+                                    <input id="product_id" class="form-control" ng-model="color.product_id" disabled />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="color">Color</label>
+                                    <input id="color" class="form-control" ng-model="color.color"
+                                           placeholder="Exemple: Black, Night Sky..." />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="list__img">
+                                        <div ng-repeat="img in color.image"
+                                             class="position-relative">
+                                            <img class="w-100" ng-src="{{img}}" />
+                                            <i class="fal fa-times position-absolute top-0"
+                                               role="button"
+                                               ng-click="removeImage($index)"></i>
+                                        </div>
+                                    </div>
+                                    <label for="image">Image</label>
+                                    <div class="d-flex align-items-center">
+                                        <input id="image" class="form-control" ng-model="colorImg"
+                                               placeholder="Link image" />
+                                        <div style="width: 50px; height: 50px; border: 1px solid #ccc;">
+                                            <img class="w-100" ng-src="{{colorImg}}" />
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-danger btn-sm my-1"
+                                            ng-click="confirmImage(colorImg)">
+                                        Confirm
+                                    </button>
+                                    @*or*@
+                                    @*<input type="file" class="form-control-file" ngf-select="UploadFiles($file)"/>*@
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="hex">Code hex</label>
+                                    <div class="d-flex align-items-center">
+                                        <input id="hex" class="form-control" ng-model="color.hex"
+                                               placeholder="Exemple: #000, #fff" />
+                                        <div ng-style="{'background-color': color.hex, 'width': '30px', 'height': '30px'}"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger"
+                            ng-click="saveColor(color, event)">
+                        Save changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End modal color -->
+    <!-- Modal size -->
+    <div class="modal fade" id="ModalSize" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{SizeTitle}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table id="example2" class="table table-bordered table-hover">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <label for="id">Id</label>
+                                    <input id="id" class="form-control" ng-model="size._id" disabled />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="product_id">Color id</label>
+                                    <input id="product_id" class="form-control" ng-model="size.product_color_id" disabled />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="color">Size</label>
+                                    <input id="color" class="form-control" ng-model="size.size"
+                                           placeholder="Exemple: Black, Night Sky..." />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="color">Quantity</label>
+                                    <input id="color" class="form-control" ng-model="size.quantity"
+                                           placeholder="Exemple: Black, Night Sky..." />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger"
+                            ng-click="saveSize(size, event)">
+                        Save changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End modal size -->
+    <!-- Modal -->
+    <div class="modal fade" id="confirmForm" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel2">
+                        Confirm your action
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Do you want continue to delete?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger"
+                            ng-click="confirmDelete()">
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.content-wrapper -->

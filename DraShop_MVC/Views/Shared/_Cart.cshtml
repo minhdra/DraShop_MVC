@@ -1,0 +1,50 @@
+﻿<div ng-controller="CartController">
+    <div class="cart__wrap col-lg-4 col-md-5">
+        <div class="cart">
+            <i class="back fal fa-times" role="button"
+                ng-click="close()"></i>
+            <h1>Your Cart</h1>
+            <button class="btn btn-light-custom w-100" title="head" data-tooltips="tooltip">Payment</button>
+            <div class="summary d-flex justify-content-between align-content-center py-4 font-weight-bold">
+                <p class="m-0">ITEMS: <span>{{$root.totalItems}}</span></p>
+                <p class="m-0">TOTAL: <span>${{$root.total}}</span></p>
+            </div>
+            <div class="cart__content empty__cart active">
+                <img class="w-100" src="~/Content/images/empty-cart.jpg" />
+                <div class="text-center">
+                    <p>oh no! You haven't any products in your car</p>
+                    <p>Let's continue shopping</p>
+                </div>
+            </div>
+            <div class="cart__content list__cart">
+                <ul class="list-group">
+                    <li class="list-group-item" ng-repeat="item in $root.cart.ListCartDetail">
+                        <input type="checkbox" checked name="cart-item" class="form-check align-self-center"/>
+                        <picture class="col-lg-4 col-md-3">
+                            <img class="w-100" ng-src={{item.image}} />
+                        </picture>
+                        <div class="d-flex flex-column justify-content-around px-0 col-md-6 pr-lg-3">
+                            <h2 class="w-100" title={{item.name}}
+                                data-tooltips="tooltip">
+                                {{item.name}}
+                            </h2>
+                            <div class="d-flex align-items-center">
+                                <input type="number" min="1" class="form-control w-50" ng-model="item.quantity"
+                                       ng-change="calcTotal(item, item.quantity)"/>
+                                <span class="w-50 text-center">{{item.size}}</span>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column justify-content-around align-items-center">
+                            <div class="remove w-100 text-center" 
+                                 role="button" title="remove" 
+                                 data-tooltips="tooltip"
+                                 ng-click="remove($event, item)"><i class="fal fa-times"></i></div>
+                            <div class="numbering font-weight-bold">${{item.price * item.quantity}}</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="cart__overlay" ng-click="close()"></div>
+</div>

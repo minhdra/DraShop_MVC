@@ -45,16 +45,18 @@ namespace DraShopDAO
         public List<Customer> toList(DataTable dt)
         {
             List<Customer> list = new List<Customer>();
-            CustomerInformationDAO infoDAO = new CustomerInformationDAO();
+            ICustomerInformationDAO infoDAO = new CustomerInformationDAO();
+            ICartDAO cartDAO = new CartDAO();
             foreach (DataRow row in dt.Rows)
             {
                 CustomerInformation info = infoDAO.GetCustomerInformation(row[0].ToString());
-                int status = row[4].ToString() == "false" ? 0 : 1;
+                Cart cart = cartDAO.GetCart(row[0].ToString());
+                int status = row[3].ToString() == "False" ? 0 : 1;
                 Customer customer = new Customer(
                     row[0].ToString(), row[1].ToString(),
-                    row[2].ToString(), row[3].ToString(),
-                    status,
-                    info);
+                    row[2].ToString(), status,
+                    row[4].ToString(), info,
+                    cart);
                 list.Add(customer);
             }
             return list;

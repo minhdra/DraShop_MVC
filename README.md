@@ -1,5 +1,5 @@
 # DraShop_MVC
-My MVC exercise in UTEHY
-Front-end: AngularJS 1.8.3
-Back-end: ADO Net Framework
+My MVC exercise in UTEHY <br/>
+Front-end: AngularJS 1.8.3 <br/>
+Back-end: ADO Net Framework <br/>
 Database: SQL Server

@@ -74,7 +74,7 @@
                                 <tbody>
                                     <tr dir-paginate="item in colors | orderBy:sortColumn:reverse | itemsPerPage:pageSize"
                                         total-items="totalCount"
-                                        ng-click="showSize(item._id)">
+                                        ng-click="showSize(item, $event)">
 
                                         <td>{{item._id}}</td>
                                         <td>{{product._id}}</td>
@@ -88,7 +88,7 @@
                                                     ng-repeat="img in item.image"
                                                     style="width: 75px; height: 75px;">
                                                     <img class="w-100 h-100" ng-src="{{img}}"
-                                                         style="object-fit: cover;" />
+                                                         style="object-fit: cover; user-select: none;" />
                                                 </li>
                                             </ul>
                                         </td>
@@ -126,15 +126,8 @@
                                         ng-change="SortBy()">
                                     <option value="" selected>Select field</option>
                                     <option value="_id">Id</option>
-                                    <option value="name">Name</option>
-                                    <option value="category_id">Category id</option>
-                                    <option value="made_in">Made in</option>
-                                    <option value="brand">Brand</option>
-                                    <option value="gender">Gender</option>
-                                    <option value="desciption">Description</option>
-                                    <option value="summary">Summary</option>
-                                    <option value="style_id">Style id</option>
-                                    <option value="status">Status</option>
+                                    <option value="size">Size</option>
+                                    <option value="quantity">Quantity</option>
                                 </select>
                                 <select class="form-control form-control-sm"
                                         ng-model="selectedSort"
@@ -169,10 +162,8 @@
                                         total-items="totalCount">
 
                                         <td>{{item._id}}</td>
-                                        <td>{{item.color_id}}</td>
-                                        <td>
-                                            {{item.size}}
-                                        </td>
+                                        <td>{{item.product_color_id}}</td>
+                                        <td>{{item.size}}</td>
                                         <td>{{item.quantity}}</td>
                                         <td class="d-flex justify-content-between">
                                             <i class="p-1 fal fa-edit" role="button"
@@ -367,16 +358,20 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <label for="color">Size</label>
-                                    <input id="color" class="form-control" ng-model="size.size"
-                                           placeholder="Exemple: Black, Night Sky..." />
+                                    <label for="size">Size</label>
+                                    <select class="custom-select" ng-model="size.size">
+                                        <option ng-repeat="s in listSize"
+                                                value="{{s.size}}" class="{{s.status}}"
+                                                >{{s.size}}</option>
+                                    </select>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <label for="color">Quantity</label>
-                                    <input id="color" class="form-control" ng-model="size.quantity"
-                                           placeholder="Exemple: Black, Night Sky..." />
+                                    <label for="quantity">Quantity</label>
+                                    <input id="quantity" class="form-control" ng-model="size.quantity"
+                                           placeholder="0"
+                                           type="number" min="0"/>
                                 </td>
                             </tr>
                         </tbody>

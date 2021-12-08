@@ -18,15 +18,15 @@ body, html {
 
 /*---------------------------------------------*/
 a {
-	font-family: '';
-	font-size: 14px;
+	font-family: Quicksand, sans-serif;
+	font-size: 16px;
 	line-height: 1.7;
 	color: #666666;
 	margin: 0px;
 	transition: all 0.4s;
 	-webkit-transition: all 0.4s;
-  -o-transition: all 0.4s;
-  -moz-transition: all 0.4s;
+	-o-transition: all 0.4s;
+	-moz-transition: all 0.4s;
 }
 
 a:focus {
@@ -45,7 +45,7 @@ h1,h2,h3,h4,h5,h6 {
 
 p {
 	font-family: Quicksand;
-	font-size: 14px;
+	font-size: 16px;
 	line-height: 1.7;
 	color: #666666;
 	margin: 0px;
@@ -120,14 +120,14 @@ iframe {
 [ Text ]*/
 .txt1 {
 	font-family: Quicksand;
-	font-size: 13px;
+	font-size: 14px;
 	line-height: 1.4;
 	color: #555555;
 }
 
 .txt2 {
 	font-family: Quicksand;
-	font-size: 13px;
+	font-size: 14px;
 	line-height: 1.4;
 	color: #999999;
 }

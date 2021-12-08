@@ -41,9 +41,10 @@ namespace DraShop_MVC.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public void AddProduct(Product product)
+        public JsonResult AddProduct(Product product)
         {
-            proBUS.AddProduct(product);
+            Product p = proBUS.AddProduct(product);
+            return Json(p, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -66,9 +67,10 @@ namespace DraShop_MVC.Areas.Admin.Controllers
             return Json(new { colors = list }, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
-        public void AddProductColor(ProductColor color)
+        public JsonResult AddProductColor(ProductColor color)
         {
-            proBUS.AddProductColor(color);
+            ProductColor c = proBUS.AddProductColor(color);
+            return Json(c, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -84,29 +86,43 @@ namespace DraShop_MVC.Areas.Admin.Controllers
         }
 
         // Price
-        [HttpPost]
-        public void AddProductPrice(ProductPrice price)
+        [HttpGet]
+        public JsonResult GetProductPrices()
         {
-            proBUS.AddProductPrice(price);
+            List<ProductPrice> list = proBUS.GetProductPrices();
+            return Json(new { listPrices = list }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult AddPrice(ProductPrice price)
+        {
+            ProductPrice p = proBUS.AddProductPrice(price);
+            return Json(p, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public void UpdateProductPrice(ProductPrice price)
+        public void UpdatePrice(ProductPrice price)
         {
             proBUS.UpdateProductPrice(price);
         }
 
         [HttpPost]
-        public void DeleteProductPrice(string _id)
+        public void DeletePrice(string _id)
         {
             proBUS.DeleteProductPrice(_id);
         }
 
         // Size
-        [HttpPost]
-        public void AddSize(ProductSize size)
+        [HttpGet]
+        public JsonResult GetProductSizes()
         {
-            proBUS.AddProductSize(size);
+            List<ProductSize> list = proBUS.GetProductSizes();
+            return Json(new { listSizes = list }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult AddSize(ProductSize size)
+        {
+            ProductSize s = proBUS.AddProductSize(size);
+            return Json(s, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

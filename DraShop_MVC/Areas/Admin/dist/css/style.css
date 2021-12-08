@@ -80,3 +80,9 @@
     #ModalColor .list__img > div i:hover {
         font-weight: bold
     }
+
+#ModalSize option.disabled {
+    background-color: #ccc;
+    cursor: not-allowed !important;
+
+}

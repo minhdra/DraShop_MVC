@@ -27,6 +27,133 @@ namespace DraShopDAO
             return toList(dt);
         }
 
+        public List<Product> GetProductsBestSelling(int length)
+        {
+            List<Product> l = new List<Product>();
+            IProductColorDAO productColorDAO = new ProductColorDAO();
+            IProductPriceDAO productPrice = new ProductPriceDAO();
+            SqlDataReader dr = dh.StoreReader("GetProductsBestSelling", length);
+            while (dr.Read()) {
+                List<ProductColor> colors = productColorDAO.GetProductColorsByProduct(dr[0].ToString());
+                ProductPrice price = productPrice.GetProductPrice(dr[0].ToString());
+                Product product = new Product(dr[0].ToString(),
+                    dr[1].ToString(), dr[2].ToString(),
+                    dr[3].ToString(), dr[4].ToString(),
+                    dr[5].ToString(), dr[6].ToString(),
+                    dr[7].ToString(), dr[8].ToString(),
+                    dr[9].ToString(), dr[10].ToString(),
+                    colors, price);
+                l.Add(product);
+            }
+
+            return l;
+        }
+
+        public List<Product> GetProductsNew(int length)
+        {
+            List<Product> l = new List<Product>();
+            IProductColorDAO productColorDAO = new ProductColorDAO();
+            IProductPriceDAO productPrice = new ProductPriceDAO();
+            SqlDataReader dr = dh.StoreReader("GetProductsNew", length);
+            while (dr.Read())
+            {
+                List<ProductColor> colors = productColorDAO.GetProductColorsByProduct(dr[0].ToString());
+                ProductPrice price = productPrice.GetProductPrice(dr[0].ToString());
+                Product product = new Product(dr[0].ToString(),
+                    dr[1].ToString(), dr[2].ToString(),
+                    dr[3].ToString(), dr[4].ToString(),
+                    dr[5].ToString(), dr[6].ToString(),
+                    dr[7].ToString(), dr[8].ToString(),
+                    dr[9].ToString(), dr[10].ToString(),
+                    colors, price);
+                l.Add(product);
+            }
+
+            return l;
+        }
+
+        public List<Product> GetProductsBestDiscount(int length)
+        {
+            List<Product> l = new List<Product>();
+            IProductColorDAO productColorDAO = new ProductColorDAO();
+            IProductPriceDAO productPrice = new ProductPriceDAO();
+            SqlDataReader dr = dh.StoreReader("GetProductsBestDiscount", length);
+            while (dr.Read())
+            {
+                List<ProductColor> colors = productColorDAO.GetProductColorsByProduct(dr[0].ToString());
+                ProductPrice price = productPrice.GetProductPrice(dr[0].ToString());
+                Product product = new Product(dr[0].ToString(),
+                    dr[1].ToString(), dr[2].ToString(),
+                    dr[3].ToString(), dr[4].ToString(),
+                    dr[5].ToString(), dr[6].ToString(),
+                    dr[7].ToString(), dr[8].ToString(),
+                    dr[9].ToString(), dr[10].ToString(),
+                    colors, price);
+                l.Add(product);
+            }
+
+            return l;
+        }
+
+        public ProductList ProductsList(string category_id, int pageIndex, int pageSize, string productName)
+        {
+            ProductList list = new ProductList();
+            List<Product> l = new List<Product>();
+            IProductColorDAO colorDAO = new ProductColorDAO();
+            IProductPriceDAO priceDAO = new ProductPriceDAO();
+            SqlDataReader dr = dh.StoreReader("GetProductsByPage", category_id, pageIndex, pageSize, productName);
+            while (dr.Read())
+            {
+                List<ProductColor> color = colorDAO.GetProductColorsByProduct(dr[0].ToString());
+                ProductPrice price = priceDAO.GetProductPrice(dr[0].ToString());
+                Product product = new Product(dr[0].ToString(),
+                    dr[1].ToString(), dr[2].ToString(),
+                    dr[3].ToString(), dr[4].ToString(),
+                    dr[5].ToString(), dr[6].ToString(),
+                    dr[7].ToString(), dr[8].ToString(),
+                    dr[9].ToString(), dr[10].ToString(),
+                    color, price);
+                l.Add(product);
+            }
+            list.listProducts = l;
+            dr.NextResult();
+            while (dr.Read())
+            {
+                list.totalCount = dr["totalCount"].ToString();
+            }
+            return list;
+        }
+
+        public ProductList GetProductsByCategoryAndGender(string category_id, int gender, int pageIndex, int pageSize, string name)
+        {
+            ProductList list = new ProductList();
+            List<Product> l = new List<Product>();
+            IProductColorDAO colorDAO = new ProductColorDAO();
+            IProductPriceDAO priceDAO = new ProductPriceDAO();
+            SqlDataReader dr = dh.StoreReader("GetProductsByCategoryAndGender", category_id, gender, pageIndex, pageSize, name);
+            while (dr.Read())
+            {
+                List<ProductColor> color = colorDAO.GetProductColorsByProduct(dr[0].ToString());
+                ProductPrice price = priceDAO.GetProductPrice(dr[0].ToString());
+                Product product = new Product(dr[0].ToString(),
+                    dr[1].ToString(), dr[2].ToString(),
+                    dr[3].ToString(), dr[4].ToString(),
+                    dr[5].ToString(), dr[6].ToString(),
+                    dr[7].ToString(), dr[8].ToString(),
+                    dr[9].ToString(), dr[10].ToString(),
+                    color, price);
+                l.Add(product);
+            }
+            list.listProducts = l;
+            dr.NextResult();
+            while (dr.Read())
+            {
+                list.totalCount = dr["totalCount"].ToString();
+            }
+
+            return list;
+        }
+
         public List<Product> GetProductsHotMen()
         {
             DataTable dt = dh.GetDataTable("exec proc_getProductsHotMen");
@@ -47,16 +174,17 @@ namespace DraShopDAO
 
         public void AddProduct(Product product)
         {
+            DateTime date = DateTime.Now;
             dh.StoreReader("AddProduct", product._id, product.name, product.description,
                 product.category_id, product.made_in, product.gender, product.brand,
-                product.style_id, product.status, product.image_avatar, product.summary);
+                product.style_id, product.image_avatar, product.summary, date);
         }
 
         public void UpdateProduct(Product product)
         {
             dh.StoreReader("UpdateProduct", product._id, product.name, product.description,
                product.category_id, product.made_in, product.gender, product.brand,
-               product.style_id, product.status, product.image_avatar, product.summary);
+               product.style_id, product.image_avatar, product.summary);
         }
 
         public void DeleteProduct(string product_id)
@@ -65,34 +193,7 @@ namespace DraShopDAO
             dh.ExcuteNonQuery(sqlQuery);
         }
 
-        public ProductList ProductsList(string category_id, int pageIndex, int pageSize, string productName)
-        {
-            ProductList list = new ProductList();
-            List<Product> l = new List<Product>();
-            IProductColorDAO colorDAO = new ProductColorDAO();
-            IProductPriceDAO priceDAO = new ProductPriceDAO();
-            SqlDataReader dr = dh.StoreReader("GetProductsByPage", category_id, pageIndex, pageSize, productName);
-            while(dr.Read())
-            {
-                List<ProductColor> color = colorDAO.GetProductColorsByProduct(dr[0].ToString());
-                ProductPrice price = priceDAO.GetProductPrice(dr[0].ToString());
-                Product product = new Product(dr[0].ToString(),
-                    dr[1].ToString(), dr[2].ToString(),
-                    dr[3].ToString(), dr[4].ToString(),
-                    dr[5].ToString(), dr[6].ToString(),
-                    dr[7].ToString(), dr[8].ToString(),
-                    dr[9].ToString(), dr[10].ToString(),
-                    color, price);
-                l.Add(product);
-            }
-            list.listProducts = l;
-            dr.NextResult();
-            while(dr.Read())
-            {
-                list.totalCount = dr["totalCount"].ToString();
-            }
-            return list;
-        }
+        
 
         public List<Product> toList(DataTable dt)
         {

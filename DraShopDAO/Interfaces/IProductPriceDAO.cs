@@ -10,6 +10,7 @@ namespace DraShopDAO
     public interface IProductPriceDAO
     {
         ProductPrice GetProductPrice(string product_id);
+        List<ProductPrice> GetProductPrices();
         void AddProductPrice(ProductPrice price);
         void UpdateProductPrice(ProductPrice price);
         void DeleteProductPrice(string _id);

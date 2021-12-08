@@ -4,7 +4,10 @@
             <i class="back fal fa-times" role="button"
                 ng-click="close()"></i>
             <h1>Your Cart</h1>
-            <button class="btn btn-light-custom w-100" title="head" data-tooltips="tooltip">Payment</button>
+            <a class="btn btn-light-custom w-100" 
+                    title="head" role="button"
+                    data-tooltips="tooltip"
+                    href="/Payment/Index">Payment</a>
             <div class="summary d-flex justify-content-between align-content-center py-4 font-weight-bold">
                 <p class="m-0">ITEMS: <span>{{$root.totalItems}}</span></p>
                 <p class="m-0">TOTAL: <span>${{$root.total}}</span></p>
@@ -19,7 +22,9 @@
             <div class="cart__content list__cart">
                 <ul class="list-group">
                     <li class="list-group-item" ng-repeat="item in $root.cart.ListCartDetail">
-                        <input type="checkbox" checked name="cart-item" class="form-check align-self-center"/>
+                        <input type="checkbox" ng-model="item.status" ng-checked="{{item.status}}" 
+                               name="cart-item" class="form-check align-self-center"
+                               ng-change="calcTotal($index, item, item.quantity)"/>
                         <picture class="col-lg-4 col-md-3">
                             <img class="w-100" ng-src={{item.image}} />
                         </picture>
@@ -30,7 +35,7 @@
                             </h2>
                             <div class="d-flex align-items-center">
                                 <input type="number" min="1" class="form-control w-50" ng-model="item.quantity"
-                                       ng-change="calcTotal(item, item.quantity)"/>
+                                       ng-change="calcTotal($index, item, item.quantity)"/>
                                 <span class="w-50 text-center">{{item.size}}</span>
                             </div>
                         </div>

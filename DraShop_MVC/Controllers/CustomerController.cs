@@ -24,6 +24,16 @@ namespace DraShop_MVC.Controllers
             return View();
         }
 
+        public ActionResult OrderCustomer()
+        {
+            return View();
+        }
+
+        public ActionResult ProfileCustomer()
+        {
+            return View();
+        }
+
         [HttpPost]
         public JsonResult SignUp(string username, string email, string password)
         {
@@ -38,11 +48,11 @@ namespace DraShop_MVC.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetCustomer(string username, string password)
+        public JsonResult GetCustomer(string username, string password, bool remember)
         {
             Customer customer = client.Login(username, password);
-            //if (!remenber) customer.password = "";
-            if(customer == null)
+            if (customer != null && !remember) customer.password = "";
+            if (customer == null)
             {
                 Session["login"] = "0";
                 Session["customer"] = "";
@@ -61,6 +71,32 @@ namespace DraShop_MVC.Controllers
             Session.Remove("login");
             Session.Remove("customer");
             return Json(0, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult GetDeliveryAddresses(string customer_id)
+        {
+            List<DeliveryAddress> deliveryAddresses = client.GetDeliveryAddresses(customer_id);
+            return Json(deliveryAddresses, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult CreateDeliveryAddress(DeliveryAddress deliveryAddress)
+        {
+            DeliveryAddress item = client.CreateDeliveryAddress(deliveryAddress);
+            return Json(item, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public void UpdateDeliveryAddress(DeliveryAddress deliveryAddress)
+        {
+            client.UpdateDeliveryAddress(deliveryAddress);
+        }
+
+        [HttpPost]
+        public void DeleteDeliveryAddress(string _id)
+        {
+            client.DeleteDeliveryAddress(_id);
         }
     }
 }

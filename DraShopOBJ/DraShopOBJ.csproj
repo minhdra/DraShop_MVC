@@ -46,6 +46,9 @@
     <Compile Include="Category.cs" />
     <Compile Include="Customer.cs" />
     <Compile Include="CustomerInformation.cs" />
+    <Compile Include="DeliveryAddress.cs" />
+    <Compile Include="Order.cs" />
+    <Compile Include="OrderDetail.cs" />
     <Compile Include="Product.cs" />
     <Compile Include="ProductColor.cs" />
     <Compile Include="ProductList.cs" />

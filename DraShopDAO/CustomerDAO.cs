@@ -47,16 +47,21 @@ namespace DraShopDAO
             List<Customer> list = new List<Customer>();
             ICustomerInformationDAO infoDAO = new CustomerInformationDAO();
             ICartDAO cartDAO = new CartDAO();
+            IDeliveryAddressDAO deliveryAddressDAO = new DeliveryAddressDAO();
+            IOrderDAO orderDAO = new OrderDAO();
             foreach (DataRow row in dt.Rows)
             {
                 CustomerInformation info = infoDAO.GetCustomerInformation(row[0].ToString());
                 Cart cart = cartDAO.GetCart(row[0].ToString());
+                List<DeliveryAddress> deliveryAddresses = deliveryAddressDAO.GetDeliveryAddresses(row[0].ToString());
+                List<Order> orders = orderDAO.GetOrders(row[0].ToString());
                 int status = row[3].ToString() == "False" ? 0 : 1;
                 Customer customer = new Customer(
                     row[0].ToString(), row[1].ToString(),
                     row[2].ToString(), status,
                     row[4].ToString(), info,
-                    cart);
+                    cart, deliveryAddresses,
+                    orders);
                 list.Add(customer);
             }
             return list;

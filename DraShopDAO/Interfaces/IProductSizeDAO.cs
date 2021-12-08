@@ -10,6 +10,7 @@ namespace DraShopDAO
     public interface IProductSizeDAO
     {
         List<ProductSize> GetProductSizesByProductColor(string product_color_id);
+        List<ProductSize> GetProductSizes();
         void AddProductSize(ProductSize size);
         void UpdateProductSize(ProductSize size);
         void DeleteProductSize(string size);

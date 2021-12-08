@@ -11,8 +11,12 @@ namespace DraShopDAO
     {
         List<Product> GetProducts();
         List<Product> GetProductsByCategory(string category_id);
+        ProductList GetProductsByCategoryAndGender(string category_id, int gender, int pageIndex, int pageSize, string name);
         List<Product> GetProductsHotMen();
         List<Product> GetProductsHotWomen();
+        List<Product> GetProductsBestSelling(int length);
+        List<Product> GetProductsNew(int length);
+        List<Product> GetProductsBestDiscount(int length);
         Product GetProduct(string id);
         ProductList ProductsList(string category_id, int pageIndex, int pageSize, string productName);
         void AddProduct(Product product);

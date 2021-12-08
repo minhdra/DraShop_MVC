@@ -24,9 +24,17 @@ namespace DraShopDAO
                 prod.price_current = double.Parse(row[2].ToString());
                 prod.date_effect = row[3].ToString();
                 prod.date_expired = row[4].ToString();
+                prod.price_origin = double.Parse(row[5].ToString());
             }
 
             return prod;
+        }
+
+        public List<ProductPrice> GetProductPrices()
+        {
+            string sqlQuery = "select * from dra_product_price";
+            DataTable dt = dh.GetDataTable(sqlQuery);
+            return toList(dt);
         }
 
         public void AddProductPrice(ProductPrice price)
@@ -51,6 +59,23 @@ namespace DraShopDAO
         {
             string sqlQuery = "DELETE FROM dra_product_price WHERE _id='" + _id + "'";
             dh.ExcuteNonQuery(sqlQuery);
+        }
+
+        public List<ProductPrice> toList(DataTable dt)
+        {
+            List<ProductPrice> list = new List<ProductPrice>();
+            foreach (DataRow row in dt.Rows)
+            {
+                double priceCurrent = double.Parse(row[2].ToString());
+                double priceOrigin = double.Parse(row[5].ToString());
+                ProductPrice prod = new ProductPrice(
+                    row[0].ToString(), row[1].ToString(),
+                    priceCurrent, row[3].ToString(), 
+                    row[4].ToString(), priceOrigin);
+                list.Add(prod);
+
+            }
+            return list;
         }
     }
 }

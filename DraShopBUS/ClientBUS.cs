@@ -13,6 +13,7 @@ namespace DraShopBUS
         ICustomerDAO customerDAO = new CustomerDAO();
         ICartDAO cartDAO = new CartDAO();
         ICartDetailDAO cartDetailDAO = new CartDetailDAO();
+        IDeliveryAddressDAO deliveryAddressDAO = new DeliveryAddressDAO();
 
         // Register customer
         public bool Register(Customer customer)
@@ -51,7 +52,7 @@ namespace DraShopBUS
             return cartDetailDAO.GetCartDetails(cart_id);
         }
         // Create cart
-        public void CreateCart(Cart cart, CartDetail cartDetail)
+        public CartDetail CreateCart(Cart cart, CartDetail cartDetail)
         {
             if(!CheckCart(cart.customer_id))
             {
@@ -77,6 +78,8 @@ namespace DraShopBUS
                     UpdateCartDetail(cartDetail);
                 }
             }
+
+            return cartDetail;
         }
         // Create cart detail
         public void CreateCartDetail(CartDetail cartDetail)
@@ -90,7 +93,7 @@ namespace DraShopBUS
         {
             Random ran = new Random();
             int number = ran.Next(1, 100);
-            string id = "C" + number;
+            string id = "" + number;
             List<Customer> list = GetCustomers();
             if (list == null) return id;
             for(int i = 0; i < list.Count; i++)
@@ -98,8 +101,8 @@ namespace DraShopBUS
                 if (list[0]._id.Trim() == id)
                 {
                     number = ran.Next(1, 100);
-                    id = "C" + number;
-                    i--;
+                    id = "" + number;
+                    i = -1;
                 }
             }
             return id;
@@ -114,12 +117,55 @@ namespace DraShopBUS
         {
             cartDetailDAO.DeleteCartDetail(_id);
         }
+        
+        /** Delivery address */
+        public List<DeliveryAddress> GetDeliveryAddresses(string customer_id)
+        {
+            return deliveryAddressDAO.GetDeliveryAddresses(customer_id);
+        }
+
+        // Create delivery address
+        public DeliveryAddress CreateDeliveryAddress(DeliveryAddress address)
+        {
+            address._id = GenerateAddressId();
+            deliveryAddressDAO.CreateDeliveryAddress(address);
+            return address;
+        }
+
+        public void UpdateDeliveryAddress(DeliveryAddress address)
+        {
+            deliveryAddressDAO.UpdateDeliveryAddress(address);
+        }
+
+        public void DeleteDeliveryAddress(string _id)
+        {
+            deliveryAddressDAO.DeleteDeliveryAddress(_id);
+        }
+
+        // Generate delivery id
+        private string GenerateAddressId()
+        {
+            Random ran = new Random();
+            List<DeliveryAddress> deliveryAddresses = deliveryAddressDAO.GetDeliveryAddresses("");
+            string id = "" + ran.Next(0, 1000);
+            for(int i = 0; i < deliveryAddresses.Count; i++)
+            {
+                if(id == deliveryAddresses[i]._id.Trim())
+                {
+                    id = "" + ran.Next(0, 1000);
+                    i = -1;
+                }
+            }
+
+            return id;
+        }
+
         // Generate cart id
         private string GenerateCartId()
         {
             Random ran = new Random();
             int number = ran.Next(1, 100);
-            string id = "C" + number;
+            string id = "" + number;
             List<Cart> list = GetCarts();
             if (list == null) return id;
             for (int i = 0; i < list.Count; i++)
@@ -127,8 +173,8 @@ namespace DraShopBUS
                 if (list[0]._id.Trim() == id)
                 {
                     number = ran.Next(1, 100);
-                    id = "C" + number;
-                    i--;
+                    id = "" + number;
+                    i = -1;
                 }
             }
             return id;
@@ -138,7 +184,7 @@ namespace DraShopBUS
         {
             Random ran = new Random();
             int number = ran.Next(1, 100);
-            string id = "CD" + number;
+            string id = number + "";
             List<CartDetail> list = GetCartDetails("");
             if (list == null) return id;
             for (int i = 0; i < list.Count; i++)
@@ -146,8 +192,8 @@ namespace DraShopBUS
                 if (list[0]._id.Trim() == id)
                 {
                     number = ran.Next(1, 100);
-                    id = "CD" + number;
-                    i--;
+                    id = "" + number;
+                    i = -1;
                 }
             }
             return id;

@@ -103,18 +103,14 @@
                                         <td>{{item.made_in}}</td>
                                         <td>{{item.brand}}</td>
                                         <td>{{item.gender}}</td>
-                                        <td title="{{item.description}}"
-                                            data-tooltips="tooltip"
-                                            data-placement="bottom">
+                                        <td title="{{item.description}}">
                                             <p style="white-space: nowrap;
                                                     text-overflow: ellipsis;
                                                     overflow: hidden;
                                                     width: 90px;
                                                     ">{{item.description}}</p>
                                         </td>
-                                        <td title="{{item.summary}}"
-                                            data-tooltips="tooltip"
-                                            data-placement="bottom">
+                                        <td title="{{item.summary}}">
                                             <p style="white-space: nowrap;
                                                     text-overflow: ellipsis;
                                                     overflow: hidden;
@@ -126,12 +122,12 @@
                                         <td class="d-flex justify-content-between">
                                             <i class="p-1 fal fa-edit" role="button"
                                                data-toggle="modal" data-target="#clickMe"
-                                               ng-click="editProduct(item, 1)"></i>
+                                               ng-click="editProduct($event, item, 1)"></i>
                                             <i class="p-1 fal fa-times"
                                                data-toggle="modal"
                                                role="button"
                                                data-target="#confirmForm"
-                                               ng-click="removeProduct(item)"> </i>
+                                               ng-click="removeProduct($event, item)"> </i>
                                         </td>
                                     </tr>
                                 </tbody>

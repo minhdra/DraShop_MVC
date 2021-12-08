@@ -13,6 +13,8 @@ namespace DraShopOBJ
         public string size { get; set; }
         public int quantity { get; set; }
 
+        public ProductSize() { }
+
         public ProductSize(string _id, string product_color_id, string size, int quantity)
         {
             this._id = _id;

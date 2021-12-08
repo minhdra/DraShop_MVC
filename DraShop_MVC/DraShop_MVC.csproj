@@ -145,6 +145,8 @@
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\DetailController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\OrderController.cs" />
+    <Compile Include="Controllers\PaymentController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -10020,9 +10022,11 @@
     <Content Include="Content\images\noResult.svg" />
     <Content Include="Content\images\noResult2.jpg" />
     <Content Include="Content\images\payAfterReceive.png" />
+    <Content Include="Content\images\sale-outline.gif" />
     <Content Include="Content\images\slide1.jpg" />
     <Content Include="Content\images\slide2.jpg" />
     <Content Include="Content\images\slide3.jpg" />
+    <Content Include="Content\images\Successful_purchase.gif" />
     <Content Include="Content\images\supreme\Tagless-Tees-Men.jpg" />
     <Content Include="Content\images\supreme\Áo_cans.png" />
     <Content Include="Content\images\visa.png" />
@@ -10168,14 +10172,6 @@
     <Content Include="Content\OwlCarousel2-2.3.4\test\index.html" />
     <Content Include="Content\OwlCarousel2-2.3.4\test\unit\autoplay.js" />
     <Content Include="Content\OwlCarousel2-2.3.4\test\unit\core.js" />
-    <Content Include="Content\slick-1.8.1\.gitignore" />
-    <Content Include="Content\slick-1.8.1\index.html" />
-    <Content Include="Content\slick-1.8.1\slick\ajax-loader.gif" />
-    <Content Include="Content\slick-1.8.1\slick\fonts\slick.svg" />
-    <Content Include="Content\slick-1.8.1\slick\slick-theme.css" />
-    <Content Include="Content\slick-1.8.1\slick\slick.css" />
-    <Content Include="Content\slick-1.8.1\slick\slick.js" />
-    <Content Include="Content\slick-1.8.1\slick\slick.min.js" />
     <Content Include="Content\style\style-bak.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -10295,23 +10291,6 @@
     <Content Include="Content\bootstrap-4.6.0-dist\js\bootstrap.bundle.min.js.map" />
     <Content Include="Content\bootstrap-4.6.0-dist\js\bootstrap.js.map" />
     <Content Include="Content\bootstrap-4.6.0-dist\js\bootstrap.min.js.map" />
-    <Content Include="Content\slick-1.8.1\bower.json" />
-    <Content Include="Content\slick-1.8.1\component.json" />
-    <Content Include="Content\slick-1.8.1\CONTRIBUTING.markdown" />
-    <Content Include="Content\slick-1.8.1\ISSUE_TEMPLATE.md" />
-    <Content Include="Content\slick-1.8.1\LICENSE" />
-    <Content Include="Content\slick-1.8.1\Makefile" />
-    <Content Include="Content\slick-1.8.1\package.json" />
-    <Content Include="Content\slick-1.8.1\README.markdown" />
-    <Content Include="Content\slick-1.8.1\slick.jquery.json" />
-    <Content Include="Content\slick-1.8.1\slick\config.rb" />
-    <Content Include="Content\slick-1.8.1\slick\fonts\slick.eot" />
-    <Content Include="Content\slick-1.8.1\slick\fonts\slick.ttf" />
-    <Content Include="Content\slick-1.8.1\slick\fonts\slick.woff" />
-    <Content Include="Content\slick-1.8.1\slick\slick-theme.less" />
-    <Content Include="Content\slick-1.8.1\slick\slick-theme.scss" />
-    <Content Include="Content\slick-1.8.1\slick\slick.less" />
-    <Content Include="Content\slick-1.8.1\slick\slick.scss" />
     <Content Include="Scripts\dirPagination.js" />
     <Content Include="Scripts\dirPagination.tpl.html" />
     <Content Include="Scripts\angular.min.js.map" />
@@ -10506,6 +10485,7 @@
     <Content Include="Areas\Admin\Views\ManageProducts\Index.cshtml" />
     <Content Include="Areas\Admin\Views\HomeAdmin\Index.cshtml" />
     <Content Include="Areas\Admin\Views\ManageProducts\ProductDetails.cshtml" />
+    <Content Include="Models\DataCity.json" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\FileAPI.flash.swf" />
     <Content Include="Scripts\FileAPI.js" />
@@ -11294,14 +11274,16 @@
     <Content Include="Views\Customer\Login.cshtml" />
     <Content Include="Scripts\version.json" />
     <Content Include="Views\Shared\_Cart.cshtml" />
+    <Content Include="Views\Payment\Index.cshtml" />
+    <Content Include="Views\Customer\OrderCustomer.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Views\ManageCategories\" />
-    <Folder Include="Models\" />
     <Folder Include="Views\Cart\" />
     <Folder Include="Views\Category\" />
+    <Folder Include="Views\Order\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -1,0 +1,261 @@
+﻿
+@{
+    ViewBag.Title = "Payment";
+    Layout = "~/Views/Shared/_PageLayout.cshtml";
+}
+<div class="payment-content" ng-controller="PaymentController">
+    <div class="payment-wrapper container pb-4"
+         style="padding-top: 68px; background-color: #f1f1f1; min-height: 100vh">
+        <div class="card delivery__address">
+            <div class="bar-address"></div>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="card-header_left d-flex align-items-center">
+                    <i class="fal fa-map-marker-smile"></i>
+                    <span class="pl-2 font-weight-bold">Delivery address</span>
+                </div>
+                <div class="card-header_right {{firstNone}}">
+                    <btn class="btn btn-outline-secondary mr-3"
+                         data-toggle="modal"
+                         data-target="#ModalAddAddress"
+                         ng-click="AddAddress()">+ Add new address</btn>
+                    <btn class="btn btn-outline-secondary">Setup address</btn>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="{{secondNone}} align-items-center">
+                    <p id="addressCus" class="m-0">
+                        <strong>{{address.customer_name}} (+84) {{address.phone_number}}</strong>
+                        {{address.specific_address}}, Xã {{address.communce}}, Huyện {{address.district}}, Tỉnh {{address.province}}
+                    </p>
+                    <span class="text-secondary mx-3">Default</span>
+                    <button class="btn btn-no_border ml-3"
+                            ng-click="ChangeAddress()">
+                        Change
+                    </button>
+                </div>
+                <div class="flex-column px-3 {{firstNone}}">
+                    <ul class="list-unstyled list__address">
+                        <li class="py-3" ng-repeat="item in listAddress">
+                            <input id="address-{{$index}}" name="address" type="radio"
+                                   ng-checked="{{item.status}}"
+                                   value="{{item}}" />
+                            <label for="address-{{$index}}">
+                                {{item.customer_name}} (+84) {{item.phone_number}}
+                                {{item.specific_address}}, Xã {{item.communce}}, Huyện {{item.district}}, Tỉnh {{item.province}}
+                            </label>
+                            <span class="text-secondary ml-3">{{isDefault}}</span>
+
+                        </li>
+                    </ul>
+                    <div class="">
+                        <button class="btn btn-orange mr-3"
+                                ng-click="ConfirmAddress()">
+                            Confirm
+                        </button>
+                        <button class="btn btn-outline-secondary" style="padding: 0.5rem 1.5rem;"
+                                ng-click="CancelChange()">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card products__cart">
+            <div class="card-header">
+                <div class="products__cart-head d-flex justify-content-between align-items-center">
+                    <div>List products</div>
+                    <div></div>
+                    <div class="text-secondary">Price</div>
+                    <div class="text-secondary">Quantity</div>
+                    <div class="text-secondary">Total</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="d-flex justify-content-between align-items-center"
+                        ng-repeat="item in $root.cart.ListCartDetail" ng-if="item.status">
+                        <div class="d-flex align-items-center">
+                            <picture>
+                                <img ng-src="{{item.image}}" />
+                            </picture>
+                            <span class="mx-4">{{item.name}}</span>
+                        </div>
+                        <div>Color: {{item.color}}</div>
+                        <div>${{item.price}}</div>
+                        <div>{{item.quantity}}</div>
+                        <div>${{item.price * item.quantity}}</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="card dra__voucher" style="border-top: none">
+            <div class="card-body d-flex">
+                <div class="d-flex align-items-center font-weight-bold" style="flex: 6">
+                    <i class="fal fa-ticket"></i>
+                    Dra voucher
+                </div>
+                <a class="text-right mr-4 font-weight-bold text-primary" style="flex: 4" role="button">Chosen voucher</a>
+
+            </div>
+        </div>
+        <div class="card card__payment-details">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>Payment methods</div>
+                    <div class="card-header_right">
+                        <span class="payment__method">Payment on delivery</span>
+                        <button class="btn btn-no_border">Change</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="card__payment-content">
+                    <div class="title">Total of products</div>
+                    <div class="price">${{$root.total}}</div>
+                    <div class="title">Transport fee</div>
+                    <div class="price">${{transportFee}}</div>
+                    <div class="title">Total payment</div>
+                    <div class="price text-big">${{$root.total + transportFee}}</div>
+                </div>
+                <div class="d-flex w-100 justify-content-end py-4">
+                    <button class="btn btn-orange"
+                            data-toggle="modal"
+                            data-target="#ModalWarning">
+                        Order
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="ModalAddAddress" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{title}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-add row py-3 px-1">
+                        <div class="col-6 py-2">
+                            <input type="text" id="fullname" class="form-control-lg form-control" required
+                                   ng-model="address.customer_name" />
+                            <label for="fullname">Fullname</label>
+                        </div>
+                        <div class="col-6 py-2">
+                            <input type="text" id="phone" class="form-control-lg form-control" required
+                                   ng-model="address.phone_number" />
+                            <label for="phone">Phone number</label>
+                        </div>
+                        <div class="col-4 py-2">
+                            <select id="province" class="custom-select" 
+                                    ng-model="SelectedProvince"
+                                    ng-change="ChoseAddress(0)">
+                                <option ng-repeat="item in ListProvince"
+                                        value="{{item.Id}}">{{item.Name}}</option>
+                            </select>
+                            @*<input type="text" id="province" class="form-control-lg form-control" required
+                                   ng-model="address.province" />*@
+                            <label for="province">Province</label>
+                        </div>
+                        <div class="col-4 py-2">
+                            <select id="province" class="custom-select"
+                                    ng-model="SelectedDistrict"
+                                    ng-change="ChoseAddress(1)">
+                                <option ng-repeat="item in ListDistrict"
+                                        value="{{item.Id}}">
+                                    {{item.Name}}
+                                </option>
+                            </select>
+                            <label for="district">District</label>
+                        </div>
+                        <div class="col-4 py-2">
+                            <select id="province" class="custom-select"
+                                    ng-model="address.commune">
+                                <option ng-repeat="item in ListCommune"
+                                        value="{{item.Name}}">
+                                    {{item.Name}}
+                                </option>
+                            </select>
+                            <label for="communce">Communce</label>
+                        </div>
+                        <div class="col-12 py-2">
+                            <input type="text" id="specific" class="form-control-lg form-control" required
+                                   ng-model="address.specific_address" />
+                            <label for="specific">Specific address</label>
+                        </div>
+                        <div class="col-12 py-2 type__address">
+                            <div class="pb-2">Type address: </div>
+                            <button class="btn btn-size active">Home</button>
+                            <button class="btn btn-size">Company</button>
+                        </div>
+                        <div class="col-12 py-2">
+                            <input id="set-default" type="checkbox"
+                                   ng-model="isDefault" />
+                            <label for="set-default">
+                                Set this address is default
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-orange"
+                            ng-click="ConfirmCreateAddress(address, set_default)">
+                        Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <!-- Modal warning -->
+    <div class="modal fade" id="ModalWarning" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center" id="exampleModalLabel">Are you sure?</h5>
+                    @*<button type="button" data-dismiss="modal" aria-label="Close">*@
+                    <i class="fal fa-times" role="button" data-dismiss="modal"></i>
+                    @*</button>*@
+                </div>
+                <div class="modal-body text-center">
+                    Are you sure want to order?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                            style=" padding: .5rem 1.5rem;">Cancel</button>
+                    <button type="button" class="btn btn-orange"
+                            data-toggle="modal"
+                            data-target="#ModalNotification"
+                            ng-click="confirmPurchase()">
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <!-- Modal Notification -->
+    <div class="modal fade" id="ModalNotification" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center" id="exampleModalLabel">🚀 SUCCESSFUL! 🚀</h5>
+                    @*<button type="button" data-dismiss="modal" aria-label="Close">*@
+                    <i class="fal fa-times" role="button" data-dismiss="modal"></i>
+                    @*</button>*@
+                </div>
+                <div class="modal-body text-center">
+                    <img src="~/Content/images/Successful_purchase.gif" style="width: 80%" />
+                </div>
+                <div class="modal-footer justify-content-start">
+                    <span>You purchase successful, you can check <a href="/Customer/OrderCustomer">right here</a>!</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+</div>

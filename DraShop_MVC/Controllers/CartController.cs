@@ -21,13 +21,14 @@ namespace DraShop_MVC.Controllers
         public JsonResult GetCart(string customer_id)
         {
             Cart cart = clientBUS.GetCart(customer_id);
-            return Json(new { cart }, JsonRequestBehavior.AllowGet);
+            return Json(cart, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public void AddToCart(Cart cart, CartDetail cartDetail)
+        public JsonResult AddToCart(Cart cart, CartDetail cartDetail)
         {
-            clientBUS.CreateCart(cart, cartDetail);
+            CartDetail result = clientBUS.CreateCart(cart, cartDetail);
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

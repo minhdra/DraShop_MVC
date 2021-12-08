@@ -20,69 +20,73 @@
     <!-- AOS scroll -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <!-- Owl Carousel -->
-    <link href="~/Content/OwlCarousel2-2.3.4/dist/assets/owl.carousel.min.css" rel="stylesheet" />
-    <link href="~/Content/OwlCarousel2-2.3.4/dist/assets/owl.theme.default.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css"/>
+    @*<link href="~/Content/OwlCarousel2-2.3.4/dist/assets/owl.carousel.min.css" rel="stylesheet" />
+    <link href="~/Content/OwlCarousel2-2.3.4/dist/assets/owl.theme.default.min.css" rel="stylesheet" />*@
     <!-- stylesheet -->
     @Styles.Render("~/Bundle/sass")
 
 </head>
 
-<body id="index" ng-app="app">
+<body class="{{classBody}}" ng-app="app" ng-controller="HomeController">
     <header class="header fixed-top">
         <nav class="container navbar navbar-expand-lg" ng-controller="MenuController">
             <a class="navbar-brand order-3 order-lg-1" href="/"><img src="~/Content/images/logo.jpg" /></a>
             <button class="navbar-toggler order-1 order-lg-2" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="far fa-bars"></i>
             </button>
-
             <div class="collapse navbar-collapse order-2 order-lg-3" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
+                    <li class="nav-item">
+                        <a class="nav-link home" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" ng-href="#client">New</a>
+                        <a class="nav-link new" href="/Home/Index#client">New</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <div class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <div class="nav-link dropdown-toggle men" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Men
                         </div>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown"
+                             style="margin-top: 1.2rem;">
                             <a class="dropdown-item" href="/Product/Index"
                                ng-repeat="category in categories"
-                               ng-click="selectCategory(category._id, category.name)">
+                               ng-click="selectCategory($event, category._id, category.name, 0)">
                                 {{category.name}}
                             </a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
-                        <div class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <div class="nav-link dropdown-toggle women" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Women
                         </div>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="#" ng-repeat="category in categories">
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown"
+                             style="margin-top: 1.2rem;">
+                            <a class="dropdown-item" href="/Product/Index" 
+                               ng-repeat="category in categories"
+                               ng-click="selectCategory($event, category._id, category.name, 1)">
                                 {{category.name}}
                             </a>
                             @*<div class="dropdown-divider"></div>*@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
+                        <a class="nav-link about" href="#">About</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Contact</a>
+                        <a class="nav-link contact" href="#">Contact</a>
                     </li>
                 </ul>
             </div>
             <div class="right d-flex align-items-center order-4">
                 <div class="dropdown__wrapper dropdown">
-                    <button class="right__item dropdown-btn" title="Search"
-                            data-tooltips="tooltip" data-placement="bottom"
+                    <button class="right__item dropdown-btn"
                             id="navbarDropdown" role="button" data-toggle="dropdown">
                         <i class="far fa-search"></i>
                     </button>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item">Search</a>
+                        <input class="form-control" placeholder="Enter something..."/>
                     </div>
                 </div>
                 <div class="dropdown__wrapper dropdown">
@@ -107,12 +111,14 @@
                     </div>
                     <div class="profile dropdown pl-2">
                         <div class="right__item dropdown-btn avatar" title="Profile"
-                                data-tooltips="tooltip" data-placement="bottom"
-                                id="navbarDropdown" role="button" data-toggle="dropdown">
+                             data-tooltips="tooltip" data-placement="bottom"
+                             id="navbarDropdown" role="button" data-toggle="dropdown">
                             <img src="https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/197911142/original/043a07c41cad114ab97c5cf4722d50aa66baee3a/make-a-cute-avatar-for-you.jpeg" />
                         </div>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="/Customer/Profile">Profile</a>
+                            <span class="dropdown-item py-2"
+                                  ng-click="cancelClick($event)">Hello: {{customer.username}}</span>
+                            <a class="dropdown-item" href="/Customer/OrderCustomer">Profile</a>
                             <a class="dropdown-item" ng-click="signOut()">Sign Out</a>
                         </div>
                     </div>
@@ -122,7 +128,7 @@
     </header>
 
     @Html.Partial("_Cart")
-    
+
     @RenderBody()
 
     <!-- Footer -->
@@ -209,19 +215,19 @@
         </div>
     </footer>
     <!-- Footer -->
-
     <!--===============================================================================================-->
     <script src="~/Scripts/angular.min.js"></script>
-    <!--===============================================================================================-->
-    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
     <!--===============================================================================================-->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <!--===============================================================================================-->
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <!--===============================================================================================-->
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <!--===============================================================================================-->
     <script src="~/Content/bootstrap-4.6.0-dist/js/bootstrap.min.js"></script>
     <!--===============================================================================================-->
-    <script src="~/Content/OwlCarousel2-2.3.4/dist/owl.carousel.min.js"></script>
+    @*<script src="~/Content/OwlCarousel2-2.3.4/dist/owl.carousel.min.js"></script>*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
     <!--===============================================================================================-->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <!--===============================================================================================-->

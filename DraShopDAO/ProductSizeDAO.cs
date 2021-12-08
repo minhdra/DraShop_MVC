@@ -21,6 +21,13 @@ namespace DraShopDAO
             return toList(dt);
         }
 
+        public List<ProductSize> GetProductSizes()
+        {
+            string sqlQuery = "select * from dra_product_size";
+            DataTable dt = dh.GetDataTable(sqlQuery);
+            return toList(dt);
+        }
+
         public void AddProductSize(ProductSize size)
         {
             if (size != null)

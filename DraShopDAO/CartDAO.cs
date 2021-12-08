@@ -21,7 +21,7 @@ namespace DraShopDAO
             Cart cart = new Cart();
             foreach(DataRow row in dt.Rows)
             {
-                List<CartDetail> ListCartDetail = cartDetailDAO.GetCartDetails(row[1].ToString().Trim());
+                List<CartDetail> ListCartDetail = cartDetailDAO.GetCartDetails(row[0].ToString().Trim());
                 cart._id = row[0].ToString().Trim();
                 cart.customer_id = row[1].ToString().Trim();
                 cart.ListCartDetail = ListCartDetail;

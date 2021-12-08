@@ -28,6 +28,11 @@ namespace DraShopBUS
             return proDAO.GetProductsByCategory(category_id);
         }
 
+        public ProductList GetProductsByCategoryAndGender(string category_id, int gender, int pageIndex, int pageSize, string name)
+        {
+            return proDAO.GetProductsByCategoryAndGender(category_id, gender, pageIndex, pageSize, name);
+        }
+
         public List<Product> GetProductsHotMen()
         {
             return proDAO.GetProductsHotMen();
@@ -38,15 +43,32 @@ namespace DraShopBUS
             return proDAO.GetProductsHotWomen();
         }
 
+        public List<Product> GetProductsBestSelling(int length)
+        {
+            return proDAO.GetProductsBestSelling(length);
+        }
+
+        public List<Product> GetProductsNew(int length)
+        {
+            return proDAO.GetProductsNew(length);
+        }
+
+        public List<Product> GetProductsBestDiscount(int length)
+        {
+            return proDAO.GetProductsBestDiscount(length);
+        }
+
+
         public Product GetProduct(string id)
         {
             return proDAO.GetProduct(id);
         }
 
-        public void AddProduct(Product product)
+        public Product AddProduct(Product product)
         {
-            //product._id = GenerateProductId();
+            product._id = GenerateProductId();
             proDAO.AddProduct(product);
+            return product;
         }
 
         public void UpdateProduct(Product product)
@@ -69,9 +91,11 @@ namespace DraShopBUS
         {
             return colorDAO.GetProductColors();
         }
-        public void AddProductColor(ProductColor color)
+        public ProductColor AddProductColor(ProductColor color)
         {
+            color._id = GenerateColorId();
             colorDAO.AddProductColor(color);
+            return color;
         }
         public void UpdateProductColor(ProductColor color)
         {
@@ -84,9 +108,15 @@ namespace DraShopBUS
 
 
         // Size
-        public void AddProductSize(ProductSize size)
+        public List<ProductSize> GetProductSizes()
         {
+            return sizeDAO.GetProductSizes();
+        }
+        public ProductSize AddProductSize(ProductSize size)
+        {
+            size._id = GenerateSizeId();
             sizeDAO.AddProductSize(size);
+            return size;
         }
         public void UpdateProductSize(ProductSize size)
         {
@@ -97,9 +127,15 @@ namespace DraShopBUS
             sizeDAO.DeleteProductSize(_id);
         }
         // Price
-        public void AddProductPrice(ProductPrice price)
+        public List<ProductPrice> GetProductPrices()
         {
+            return priceDAO.GetProductPrices();
+        }
+        public ProductPrice AddProductPrice(ProductPrice price)
+        {
+            price._id = GeneratePriceId();
             priceDAO.AddProductPrice(price);
+            return price;
         }
         public void UpdateProductPrice(ProductPrice price)
         {
@@ -113,7 +149,7 @@ namespace DraShopBUS
         public string GenerateProductId()
         {
             Random ran = new Random();
-            string id = "P" + ran.Next(1, 100);
+            string id = "" + ran.Next(1, 1000);
             List<Product> list = GetProducts();
             if(list.Count > 0)
             {
@@ -121,8 +157,65 @@ namespace DraShopBUS
                 {
                     if(list[i]._id.Trim() == id)
                     {
-                        id = "P" + ran.Next(1, 100);
-                        i--;
+                        id = "" + ran.Next(1, 1000);
+                        i = -1;
+                    }
+                }
+            }
+            return id;
+        }
+
+        public string GenerateColorId()
+        {
+            Random ran = new Random();
+            string id = ran.Next(1, 1000) + "";
+            List<ProductColor> list = GetProductColors();
+            if (list.Count > 0)
+            {
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (list[i]._id.Trim() == id)
+                    {
+                        id = "" + ran.Next(1, 1000);
+                        i = -1;
+                    }
+                }
+            }
+            return id;
+        }
+
+        public string GenerateSizeId()
+        {
+            Random ran = new Random();
+            string id = ran.Next(1, 1000) + "";
+            List<ProductSize> list = GetProductSizes();
+            if (list.Count > 0)
+            {
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (list[i]._id.Trim() == id)
+                    {
+                        id = "" + ran.Next(1, 1000);
+                        i = -1;
+                    }
+                }
+            }
+            return id;
+        }
+
+        public string GeneratePriceId()
+        {
+            Random ran = new Random();
+            string id = ran.Next(1, 1000) + "";
+            List<ProductPrice> list = GetProductPrices();
+            if (list.Count > 0)
+            {
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (list[i]._id.Trim() == id)
+                    {
+                        id = "" + ran.Next(1, 1000);
+                        i = -1;
                     }
                 }
             }

@@ -15,6 +15,8 @@ namespace DraShopOBJ
         public string email { get; set; }
         public CustomerInformation information { get; set; }
         public Cart cart { get; set; }
+        public List<DeliveryAddress> deliveryAddresses { get; set; }
+        public List<Order> orders { get; set; }
 
         public Customer() { }
         public Customer(
@@ -22,7 +24,9 @@ namespace DraShopOBJ
             string password, int status, 
             string email, 
             CustomerInformation information,
-            Cart cart)
+            Cart cart,
+            List<DeliveryAddress> deliveryAddresses,
+            List<Order> orders)
         {
             this._id = _id;
             this.username = username;
@@ -31,6 +35,8 @@ namespace DraShopOBJ
             this.email = email;
             this.information = information;
             this.cart = cart;
+            this.deliveryAddresses = deliveryAddresses;
+            this.orders = orders;
         }
     }
 }

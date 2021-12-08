@@ -33,10 +33,13 @@ namespace DraShopDAO
 
         public void UpdateCartDetail(CartDetail cartDetail)
         {
-            dh.StoreReader("updateCartDetail", cartDetail._id, 
-                cartDetail.quantity, 
+            dh.StoreReader("updateCartDetail", 
+                cartDetail._id, 
+                cartDetail.quantity,
+                cartDetail.status,
                 cartDetail.size,
-                cartDetail.color);
+                cartDetail.color,
+                cartDetail.image);
         }
 
         public void DeleteCartDetail(string _id)
@@ -52,7 +55,7 @@ namespace DraShopDAO
             {
                 int quantity = int.Parse(row[3].ToString());
                 double price = double.Parse(row[4].ToString());
-                int status = row[6].ToString() == "false" ? 0 : 1;
+                int status = row[6].ToString() == "False" ? 0 : 1;
                 CartDetail prod = new CartDetail(
                     row[0].ToString(), row[1].ToString(),
                     row[2].ToString(), quantity,

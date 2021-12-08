@@ -10,7 +10,7 @@ namespace DraShop_MVC.Controllers
 {
     public class ProductController : Controller
     {
-        ManageProductBUS prodBUS = new ManageProductBUS();
+        IManageProductsBUS prodBUS = new ManageProductBUS();
         // GET: Product
         public ActionResult Index()
         {
@@ -20,6 +20,22 @@ namespace DraShop_MVC.Controllers
         public JsonResult GetProducts()
         {
             List<Product> list = prodBUS.GetProducts();
+            return Json(new { products = list }, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetProductsBestSelling(int length)
+        {
+            List<Product> list = prodBUS.GetProductsBestSelling(length);
+            return Json(new { products = list }, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetProductsNew(int length)
+        {
+            List<Product> list = prodBUS.GetProductsNew(length);
+            return Json(new { products = list }, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetProductsBestDiscount(int length)
+        {
+            List<Product> list = prodBUS.GetProductsBestDiscount(length);
             return Json(new { products = list }, JsonRequestBehavior.AllowGet);
         }
 
@@ -39,6 +55,12 @@ namespace DraShop_MVC.Controllers
         {
             List<Product> list = prodBUS.GetProductsByCategory(category_id);
             return Json(new { products = list }, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetProductsByCategoryAndGender(string category_id, int gender, int pageIndex, int pageSize, string name)
+        {
+            ProductList productList = prodBUS.GetProductsByCategoryAndGender(category_id, gender, pageIndex, pageSize, name);
+            return Json(productList, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetProductsPagination(string category_id, int pageIndex, int pageSize, string name)

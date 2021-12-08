@@ -1,0 +1,233 @@
+﻿
+@{
+    ViewBag.Title = "OrderCustomer";
+    Layout = "~/Views/Shared/_PageLayout.cshtml";
+}
+
+<div class="order__main" ng-controller="OrderCustomerController">
+    <div class="order__wrapper container d-flex"
+         style="padding-top: 75px; min-height: 100vh">
+        <div class="col-lg-3">
+            <div class="py-1 d-flex align-items-center avatar__wrap">
+                <div class="avatar">
+                    <img class="w-100" src="https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/197911142/original/043a07c41cad114ab97c5cf4722d50aa66baee3a/make-a-cute-avatar-for-you.jpeg" />
+                </div>
+                <div class="d-flex flex-column justify-content-between align-items-start px-3">
+                    <div class="font-weight-bold">{{customer.username}}</div>
+                    <a href="/Customer/Profile">Edit your profile</a>
+                </div>
+            </div>
+            <hr />
+            <div class="list__options">
+                <ul class="list-unstyled">
+                    <li><i class="fal fa-user"></i><a href="/Customer/Profile">My account</a></li>
+                    <li class="active"><i class="fal fa-clipboard-list"></i><a href="/Customer/Order">My orders</a></li>
+                    <li><i class="fal fa-bell"></i><a href="#">Notifications</a></li>
+                    <li><i class="fal fa-ticket"></i><a href="#">Voucher</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-lg-9 px-3 order__right">
+            <div class="card">
+                <div class="card-header nav nav-tabs" role="tablist">
+                    <a class="nav-link active" data-toggle="tab" role="tab" data-target="#wait-confirm">Wait confirm</a>
+                    <a class="nav-link" data-toggle="tab" role="tab" data-target="#wait-received">Wait recieved</a>
+                    <a class="nav-link" data-toggle="tab" role="tab" data-target="#delivering">Delivering</a>
+                    <a class="nav-link" data-toggle="tab" role="tab" data-target="#deliveried">Deliveried</a>
+                    <a class="nav-link" data-toggle="tab" role="tab" data-target="#canceled">Canceled</a>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content">
+                        <div class="tab-pane fade active show" id="wait-confirm" role="tabpanel">
+                            <div class="no-order d-flex flex-column justify-content-center align-items-center"
+                                 style="min-height: 80vh"
+                                 ng-if="orders0.length <= 0">
+                                <div class="d-flex" 
+                                     style="width: 200px; object-fit: cover">
+                                    <img class="w-100" src="https://cdn.dribbble.com/users/776386/screenshots/2677382/media/1e5a9b6fb55fd9e51a390aa8f355d3bc.jpg"/>
+                                </div>
+                                <div class=" font-weight-bold">No orders</div>
+                            </div>
+                            <div class="list__orders"
+                                 ng-if="orders0.length > 0">
+                                <div ng-repeat="order in orders0">
+                                    <div class="d-flex justify-content-between align-items-center list__orders-item"
+                                         data-toggle="collapse" data-target="#order0-{{order._id.trim()}}"
+                                         role="button">
+                                        <div><i class="fas fa-caret-right pr-1"></i>Order id: {{order._id.trim()}}</div>
+                                        <div>Date created: {{order.date_create}}</div>
+                                        <div>Total: ${{order.total}}</div>
+                                        <div>Wait confirm...</div>
+                                    </div>
+                                    <div class="collapse"
+                                         id="order0-{{order._id.trim()}}">
+                                        <div class="order-address font-weight-bold"
+                                             title="{{order.address}}"
+                                             >Address: {{order.address}}</div>
+                                        <ul ng-repeat="detail in order.orderDetails">
+                                            <li class="d-flex align-items-center justify-content-between">
+                                                <picture><img class="w-100" ng-src="{{detail.image}}" /></picture>
+                                                <div class="font-weight-bold">{{detail.product.name}}</div>
+                                                <div>Quantity: {{detail.quantity}}</div>
+                                                <div>Cost: ${{detail.quantity * detail.price}}</div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="wait-received" role="tabpanel">
+                            <div class="no-order d-flex flex-column justify-content-center align-items-center"
+                                 style="min-height: 80vh"
+                                 ng-if="orders1.length <= 0">
+                                <div class="d-flex"
+                                     style="width: 200px; object-fit: cover">
+                                    <img class="w-100" src="https://cdn.dribbble.com/users/776386/screenshots/2677382/media/1e5a9b6fb55fd9e51a390aa8f355d3bc.jpg" />
+                                </div>
+                                <div class=" font-weight-bold">No orders</div>
+                            </div>
+                            <div class="list__orders"
+                                 ng-if="orders1.length > 0">
+                                <div ng-repeat="order in orders1">
+                                    <div class="d-flex justify-content-between align-items-center list__orders-item"
+                                         data-toggle="collapse" data-target="#order0-{{order._id.trim()}}"
+                                         role="button">
+                                        <div><i class="fas fa-caret-right pr-1"></i>Order id: {{order._id.trim()}}</div>
+                                        <div>Date created: {{order.date_create}}</div>
+                                        <div>Total: ${{order.total}}</div>
+                                        <div>Confirmed</div>
+                                    </div>
+                                    <div class="collapse"
+                                         id="order0-{{order._id.trim()}}">
+                                        <div class="order-address font-weight-bold"
+                                             title="{{order.address}}">Address: {{order.address}}</div>
+                                        <ul ng-repeat="detail in order.orderDetails">
+                                            <li class="d-flex align-items-center justify-content-between">
+                                                <picture><img class="w-100" ng-src="{{detail.image}}" /></picture>
+                                                <div class="font-weight-bold">{{detail.product.name}}</div>
+                                                <div>Quantity: {{detail.quantity}}</div>
+                                                <div>Cost: ${{detail.quantity * detail.price}}</div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="delivering" role="tabpanel">
+                            <div class="no-order d-flex flex-column justify-content-center align-items-center"
+                                 style="min-height: 80vh"
+                                 ng-if="orders2.length <= 0">
+                                <div class="d-flex"
+                                     style="width: 200px; object-fit: cover">
+                                    <img class="w-100" src="https://cdn.dribbble.com/users/776386/screenshots/2677382/media/1e5a9b6fb55fd9e51a390aa8f355d3bc.jpg" />
+                                </div>
+                                <div class=" font-weight-bold">No orders</div>
+                            </div>
+                            <div class="list__orders"
+                                 ng-if="orders2.length > 0">
+                                <div ng-repeat="order in orders2">
+                                    <div class="d-flex justify-content-between align-items-center list__orders-item"
+                                         data-toggle="collapse" data-target="#order0-{{order._id.trim()}}"
+                                         role="button">
+                                        <div><i class="fas fa-caret-right pr-1"></i>Order id: {{order._id.trim()}}</div>
+                                        <div>Date created: {{order.date_create}}</div>
+                                        <div>Total: ${{order.total}}</div>
+                                        <div>Delivering...</div>
+                                    </div>
+                                    <div class="collapse"
+                                         id="order0-{{order._id.trim()}}">
+                                        <div class="order-address font-weight-bold"
+                                             title="{{order.address}}">Address: {{order.address}}</div>
+                                        <ul ng-repeat="detail in order.orderDetails">
+                                            <li class="d-flex align-items-center justify-content-between">
+                                                <picture><img class="w-100" ng-src="{{detail.image}}" /></picture>
+                                                <div class="font-weight-bold">{{detail.product.name}}</div>
+                                                <div>Quantity: {{detail.quantity}}</div>
+                                                <div>Cost: ${{detail.quantity * detail.price}}</div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="deliveried" role="tabpanel">
+                            <div class="no-order d-flex flex-column justify-content-center align-items-center"
+                                 style="min-height: 80vh"
+                                 ng-if="orders3.length <= 0">
+                                <div class="d-flex"
+                                     style="width: 200px; object-fit: cover">
+                                    <img class="w-100" src="https://cdn.dribbble.com/users/776386/screenshots/2677382/media/1e5a9b6fb55fd9e51a390aa8f355d3bc.jpg" />
+                                </div>
+                                <div class=" font-weight-bold">No orders</div>
+                            </div>
+                            <div class="list__orders"
+                                 ng-if="orders3.length > 0">
+                                <div ng-repeat="order in orders3">
+                                    <div class="d-flex justify-content-between align-items-center list__orders-item"
+                                         data-toggle="collapse" data-target="#order0-{{order._id.trim()}}"
+                                         role="button">
+                                        <div><i class="fas fa-caret-right pr-1"></i>Order id: {{order._id.trim()}}</div>
+                                        <div>Date created: {{order.date_create}}</div>
+                                        <div>Total: ${{order.total}}</div>
+                                        <div>Deliveried</div>
+                                    </div>
+                                    <div class="collapse"
+                                         id="order0-{{order._id.trim()}}">
+                                        <div class="order-address font-weight-bold"
+                                             title="{{order.address}}">Address: {{order.address}}</div>
+                                        <ul ng-repeat="detail in order.orderDetails">
+                                            <li class="d-flex align-items-center justify-content-between">
+                                                <picture><img class="w-100" ng-src="{{detail.image}}" /></picture>
+                                                <div class="font-weight-bold">{{detail.product.name}}</div>
+                                                <div>Quantity: {{detail.quantity}}</div>
+                                                <div>Cost: ${{detail.quantity * detail.price}}</div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="canceled" role="tabpanel">
+                            <div class="no-order d-flex flex-column justify-content-center align-items-center"
+                                 style="min-height: 80vh"
+                                 ng-if="orders4.length <= 0">
+                                <div class="d-flex"
+                                     style="width: 200px; object-fit: cover">
+                                    <img class="w-100" src="https://cdn.dribbble.com/users/776386/screenshots/2677382/media/1e5a9b6fb55fd9e51a390aa8f355d3bc.jpg" />
+                                </div>
+                                <div class=" font-weight-bold">No orders</div>
+                            </div>
+                            <div class="list__orders"
+                                 ng-if="orders4.length > 0">
+                                <div ng-repeat="order in orders4">
+                                    <div class="d-flex justify-content-between align-items-center list__orders-item"
+                                         data-toggle="collapse" data-target="#order0-{{order._id.trim()}}"
+                                         role="button">
+                                        <div><i class="fas fa-caret-right pr-1"></i>Order id: {{order._id.trim()}}</div>
+                                        <div>Date created: {{order.date_create}}</div>
+                                        <div>Total: ${{order.total}}</div>
+                                        <div>Confirmed</div>
+                                    </div>
+                                    <div class="collapse"
+                                         id="order0-{{order._id.trim()}}">
+                                        <div class="order-address font-weight-bold"
+                                             title="{{order.address}}">Address: {{order.address}}</div>
+                                        <ul ng-repeat="detail in order.orderDetails">
+                                            <li class="d-flex align-items-center justify-content-between">
+                                                <picture><img class="w-100" ng-src="{{detail.image}}" /></picture>
+                                                <div class="font-weight-bold">{{detail.product.name}}</div>
+                                                <div>Quantity: {{detail.quantity}}</div>
+                                                <div>Cost: ${{detail.quantity * detail.price}}</div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -13,5 +13,6 @@ namespace DraShopDAO
         void CreateCartDetail(CartDetail cartDetail);
         void UpdateCartDetail(CartDetail cartDetail);
         void DeleteCartDetail(string _id);
+        //void DeleteCartDetailByOrderId(string order_id);
     }
 }

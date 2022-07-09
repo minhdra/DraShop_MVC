@@ -1,0 +1,224 @@
+﻿
+@{
+    ViewBag.Title = "ManageOrdersView";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper" ng-controller="ManageOrdersController">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Manage Orders</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/Admin/HomeAdmin/Index">Home</a></li>
+                        <li class="breadcrumb-item active">Manage orders</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card text-center">
+                        <div class="card-header d-flex justify-content-between">
+                            <div class="d-flex w-50 justify-content-between">
+                                <select class="form-control form-control-sm mr-2"
+                                        ng-model="selectedValue"
+                                        ng-change="SortBy()">
+                                    <option value="" selected>Select field</option>
+                                    <option value="_id">Id</option>
+                                    <option value="customer">Customer</option>
+                                    <option value="address">Address</option>
+                                    <option value="date">Date</option>
+                                    <option value="total">Total</option>
+                                    <option value="status">Status</option>
+                                </select>
+                                <select class="form-control form-control-sm mr-2"
+                                        ng-model="selectedSort"
+                                        ng-change="SortBy()">
+                                    <option value="" selected>Select sort</option>
+                                    <option value="Ascending">Ascending</option>
+                                    <option value="Descending">Descending</option>
+                                </select>
+                            </div>
+                            <div class="w-50 text-right">Total: {{orders.length}}</div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive">
+                            <table id="table" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>#</th>
+                                        <th>Customer</th>
+                                        <th>Address</th>
+                                        <th>Date</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                        <th>Tools</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr dir-paginate="item in orders | orderBy:sortColumn:reverse | itemsPerPage:pageSize"
+                                        total-items="orders.length"
+                                        >
+                                        <td>
+                                            <div class="border-circle"
+                                                 ng-click="goDetails(item._id)">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </div>
+                                        </td>
+                                        <td>{{item._id}}</td>
+                                        <td>{{item.customer_id}}</td>
+                                        <td title="{{item.address}}"
+                                            data-tooltips="tooltip"
+                                            data-placement="bottom">
+                                            <p style="white-space: nowrap;
+                                                    text-overflow: ellipsis;
+                                                    overflow: hidden;
+                                                    width: 150px;
+                                                    ">{{item.address}}</p>
+                                        </td>
+                                        <td>{{item.date_create}}</td>
+                                        <td>${{item.total}}</td>
+                                        <td ng-if="item.status == 0"
+                                            data-toggle="modal"
+                                            data-target="#confirmModal"
+                                            ng-click="getStatus(item)">
+                                            <div class="wait-confirm btn-warning">
+                                                Wait confirm
+                                            </div>
+                                        </td>
+                                        <td ng-if="item.status == 1"
+                                            data-toggle="modal"
+                                            data-target="#confirmModal"
+                                            ng-click="getStatus(item)">
+                                            <div class="wait-confirm bg-info">
+                                                Confirmed
+                                            </div>
+                                        </td>
+                                        <td ng-if="item.status == 2"
+                                            data-toggle="modal"
+                                            data-target="#confirmModal"
+                                            ng-click="getStatus(item)">
+                                            <div class="wait-confirm bg-success">
+                                                Packed
+                                            </div>
+                                        </td>
+                                        <td ng-if="item.status == 3"
+                                            data-toggle="modal"
+                                            data-target="#confirmModal"
+                                            ng-click="getStatus(item)">
+                                            <div class="wait-confirm bg-warning">
+                                                Delivering
+                                            </div>
+                                        </td>
+                                        <td ng-if="item.status == 4"
+                                            data-toggle="modal"
+                                            data-target="#confirmModal"
+                                            ng-click="getStatus(item)">
+                                            <div class="wait-confirm bg-success">
+                                                Deliveried
+                                            </div>
+                                        </td>
+                                        <td ng-if="item.status == 5">
+                                            <div class="wait-confirm bg-danger">
+                                                Canceled
+                                            </div>
+                                        </td>
+                                        <td class="d-flex justify-content-center align-items-center"
+                                            ng-if="item.status == 0">
+                                            <i class="fal fa-times"
+                                               data-toggle="modal"
+                                               role="button"
+                                               data-target="#confirmRemove"
+                                               ng-click="getStatus(item)"> </i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                        <dir-pagination-controls max-size="maxSize"
+                                                 direction-links="true"
+                                                 boundary-links="true"
+                                                 on-page-change="GetOrders(newPageNumber)"></dir-pagination-controls>
+                    </div>
+                    <!-- /.card -->
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+    <!-- Button trigger modal -->
+    <!-- Modal -->
+    <div class="modal fade" id="confirmModal">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Warning</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <img class="w-50" src="https://image.freepik.com/free-vector/warning-concept-illustration_114360-1492.jpg" />
+                    <br />
+                    Are you sure switch status?
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Back</button>
+                    <button type="button" class="btn btn-success"
+                            ng-click="confirmSwitch(1)">
+                        Next status
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="confirmRemove" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Warning</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <img class="w-50" src="https://image.freepik.com/free-vector/warning-concept-illustration_114360-1492.jpg" />
+                    <br />
+                    Are you sure cancel this order?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Back</button>
+                    <button type="button" class="btn btn-warning"
+                            ng-click="confirmSwitch(2)">
+                        Cancel order
+                    </button>
+                    <button type="button" class="btn btn-danger"
+                            ng-click="confirmSwitch(3)">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- /.content-wrapper -->

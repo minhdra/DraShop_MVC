@@ -32,6 +32,11 @@ namespace DraShop_MVC.Controllers
             return Json(new { order = o }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public void UpdateOrder(Order order)
+        {
+            manageOrderBUS.UpdateOrder(order);
 
+        }
     }
 }

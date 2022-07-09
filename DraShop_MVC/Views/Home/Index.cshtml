@@ -173,9 +173,9 @@
     </div>
 </div>
 
-<div class="client section__padding section__img" ng-controller="ClientSlideController"
-     ng-if="productsHotWomen.length > 0 || productsHotMen.lenth > 0">
-    <div class="container">
+<div class="client section__padding section__img" ng-controller="ClientSlideController" id="hot">
+    <div class="container"
+         ng-if="productsHotWomen.length > 0 || productsHotMen.length > 0">
         <div class="row justify-content-between">
             <div class="col-xl-5 col-lg-6 col-md-6">
                 <div class="section__tittle">
@@ -193,9 +193,9 @@
                     <nav>
                         <div class="nav nav-tabs" id="nav-tab" role="tablist">
                             <a class="nav-link active" href="#nav-hot-men" id="men-tab" data-toggle="tab" role="tab" 
-                               ng-if="productsHotMen.lenth > 0">Men</a>
+                               ng-if="productsHotMen.length > 0">Men</a>
                             <a class="nav-link" href="#nav-hot-women" id="women-tab" data-toggle="tab" role="tab"
-                               ng-if="productsHotWomen.lenth > 0">Women</a>
+                               ng-if="productsHotWomen.length > 0">Women</a>
                         </div>
                     </nav>
                 </div>
@@ -205,7 +205,7 @@
     <div id="client" class="container">
         <div class="tab-content" id="nav-tabContent">
             <div class="tab-pane fade active show" id="nav-hot-men" role="tabpanel" aria-labelledby="men-tab"
-                 ng-if="productsHotMen.lenth > 0">
+                 ng-if="productsHotMen.length > 0">
                 @*<div class="items-active slick-slider products__wrapper">*@
                 <div class="items-active owl-carousel owl-theme products__wrapper">
                     <div @*class="col-lg-4 col-md-6 col-sm-6"*@ class="product__wrap"
@@ -229,7 +229,7 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="nav-hot-women" role="tabpanel" aria-labelledby="women-tab"
-                 ng-if="productsHotWomen.lenth > 0">
+                 ng-if="productsHotWomen.length > 0">
                 <div class="items-active owl-carousel owl-theme products__wrapper">
                     <div ng-repeat="item in productsHotWomen">
                         <div class="single__product text-center">
@@ -254,7 +254,7 @@
     </div>
 </div>
 
-<div class="client section__padding section__img" ng-controller="ClientSlideController">
+<div class="client section__padding section__img" ng-controller="ClientSlideController" id="discount">
     <div class="container">
         <div class="row justify-content-between">
             <div class="col-xl-5 col-lg-6 col-md-6">

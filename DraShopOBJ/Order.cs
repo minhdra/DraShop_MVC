@@ -14,11 +14,13 @@ namespace DraShopOBJ
         public double total { get; set; }
         public int status { get; set; }
         public string customer_id { get; set; }
+        public int flag { get; set; }
         public List<OrderDetail> orderDetails { get; set; }
         public Order() { }
         public Order(string _id, string date_create,
             string address, double total,
             int status, string customer_id,
+            int flag,
             List<OrderDetail> orderDetails)
         {
             this._id = _id;
@@ -27,6 +29,7 @@ namespace DraShopOBJ
             this.total = total;
             this.status = status;
             this.customer_id = customer_id;
+            this.flag = flag;
             this.orderDetails = orderDetails;
         }
     }

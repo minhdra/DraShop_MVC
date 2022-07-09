@@ -17,10 +17,21 @@ namespace DraShop_MVC.Controllers
             return View();
         }
 
+        public ActionResult SearchResult()
+        {
+            return View();
+        }
+
         public JsonResult GetProducts()
         {
             List<Product> list = prodBUS.GetProducts();
             return Json(new { products = list }, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult SearchProducts(string category_id, string keyword)
+        {
+            List<Product> list = prodBUS.SearchProducts(category_id, keyword);
+            return Json(list, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetProductsBestSelling(int length)
@@ -38,23 +49,26 @@ namespace DraShop_MVC.Controllers
             List<Product> list = prodBUS.GetProductsBestDiscount(length);
             return Json(new { products = list }, JsonRequestBehavior.AllowGet);
         }
-
         public JsonResult GetProductsHotMen()
         {
             List<Product> list = prodBUS.GetProductsHotMen();
             return Json(new { products = list }, JsonRequestBehavior.AllowGet);
         }
-
         public JsonResult GetProductsHotWomen()
         {
             List<Product> list = prodBUS.GetProductsHotWomen();
             return Json(new { products = list }, JsonRequestBehavior.AllowGet);
         }
+        //public JsonResult GetProductsByCategory(string category_id)
+        //{
+        //    List<Product> list = prodBUS.GetProductsByCategory(category_id);
+        //    return Json(new { products = list }, JsonRequestBehavior.AllowGet);
+        //}
 
-        public JsonResult GetProductsByCategory(string category_id)
+        public JsonResult GetProductsByCategory(string category_id, int pageIndex, int pageSize, string name)
         {
-            List<Product> list = prodBUS.GetProductsByCategory(category_id);
-            return Json(new { products = list }, JsonRequestBehavior.AllowGet);
+            ProductList productList = prodBUS.GetProductsByCategory(category_id, pageIndex, pageSize, name);
+            return Json(productList, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetProductsByCategoryAndGender(string category_id, int gender, int pageIndex, int pageSize, string name)

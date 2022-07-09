@@ -9,6 +9,7 @@ using DraShopOBJ;
 
 namespace DraShop_MVC.Areas.Admin.Controllers
 {
+    [Authorize]
     public class ManageProductsController : Controller
     {
         IManageProductsBUS proBUS = new ManageProductBUS();

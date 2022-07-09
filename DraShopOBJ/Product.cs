@@ -14,7 +14,6 @@ namespace DraShopOBJ
         public string made_in { get; set; }
         public string gender { get; set; }
         public string brand { get; set; }
-        public string style_id { get; set; }
         public string image_avatar { get; set; }
         public string summary { get; set; }
         public string date_create { get; set; }
@@ -29,7 +28,7 @@ namespace DraShopOBJ
         public Product(string _id, string name,
            string description, string category_id, 
            string made_in, string gender, 
-           string brand, string style_id, string image_avatar, 
+           string brand, string image_avatar, 
            string summary, string date_create,
            List<ProductColor> ListColor, ProductPrice price
         )
@@ -41,7 +40,6 @@ namespace DraShopOBJ
             this.made_in = made_in;
             this.gender = gender;
             this.brand = brand;
-            this.style_id = style_id;
             this.image_avatar = image_avatar;
             this.summary = summary;
             this.date_create = date_create;

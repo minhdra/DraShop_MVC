@@ -148,6 +148,7 @@ namespace DraShopBUS
             Random ran = new Random();
             List<DeliveryAddress> deliveryAddresses = deliveryAddressDAO.GetDeliveryAddresses("");
             string id = "" + ran.Next(0, 1000);
+            
             for(int i = 0; i < deliveryAddresses.Count; i++)
             {
                 if(id == deliveryAddresses[i]._id.Trim())

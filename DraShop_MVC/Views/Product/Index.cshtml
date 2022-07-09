@@ -5,7 +5,6 @@
 }
 
 <div class="products container row m-auto" ng-controller="ProductController">
-
     <div class="col-md-4 col-lg-3 col-xl-3 pt-5 left__column">
         <div class="collapse__wrap">
             <h3 class="collapse__title text-uppercase"
@@ -62,8 +61,10 @@
     </div>
     <div class="col-md-8 col-lg-9 col-xl-9 pt-5">
         <div class="right__head d-flex justify-content-between align-items-center">
-            <h1>{{selectedName}}</h1>
+            <h1 class="text-color">{{selectedName}}</h1>
             <div class="tools">
+                <input class="form-control mr-1" ng-model="keyword" placeholder="keyword?"
+                       ng-change="GetProducts(pageIndex, keyword)"/>
                 <select class="form-control"
                         ng-model="valueSort" style="padding: 0 1rem;"
                         ng-change="SortBy()">
@@ -75,29 +76,34 @@
                 </select>
             </div>
         </div>
-        <div class="row products__wrap">
-            <div class="col-lg-4 col-md-6 col-sm-12"
-                 dir-paginate="item in products | orderBy:sortColumn:reverse | itemsPerPage:pageSize"
-                 total-items="totalCount">
-                <div class="single__product text-center mb-40">
-                    <div class="single__img">
-                        <img class="w-100" ng-src="{{item.image_avatar}}" alt="">
-                        <div class="overlay">
-                            <a class="btn btn-orange" 
-                               href="/Detail/Index" ng-click="goDetail(item._id)">Order Now</a>
+        <div ng-if="totalCount > 0">
+            <div class="row products__wrap">
+                <div class="col-lg-4 col-md-6 col-sm-12"
+                     dir-paginate="item in products | orderBy:sortColumn:reverse | itemsPerPage:pageSize"
+                     total-items="totalCount">
+                    <div class="single__product text-center mb-40">
+                        <div class="single__img">
+                            <img class="w-100" ng-src="{{item.image_avatar}}" alt="">
+                            <div class="overlay">
+                                <a class="btn btn-orange"
+                                   href="/Detail/Index" ng-click="goDetail(item._id)">Order Now</a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="product__caption">
-                        <h5><a href="/Detail/Index" ng-click="goDetail(item._id)">{{item.name}}</a></h5>
-                        <div class="numbering">${{item.price.price_current}}</div>
+                        <div class="product__caption">
+                            <h5><a href="/Detail/Index" ng-click="goDetail(item._id)">{{item.name}}</a></h5>
+                            <div class="numbering">${{item.price.price_current}}</div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <dir-pagination-controls max-size="maxSize"
+                                     direction-links="true"
+                                     boundary-links="true"
+                                     on-page-change="GetProducts(newPageNumber, keyword)"></dir-pagination-controls>
         </div>
-        <dir-pagination-controls max-size="maxSize" 
-                                 direction-links="true"
-                                 boundary-links="true"
-                                 on-page-change="GetProducts(newPageNumber)"></dir-pagination-controls>
+        <div ng-if="totalCount == 0">
+            <img class="w-100" style="height: 100vh" src="~/Content/images/Empty-pana.svg" />
+        </div>
     </div>
 </div>
 

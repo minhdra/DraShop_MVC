@@ -1,0 +1,55 @@
+﻿
+@{
+    ViewBag.Title = "SearchResult";
+    Layout = "~/Views/Shared/_PageLayout.cshtml";
+}
+
+
+<div class="products container row m-auto" ng-controller="ProductController">
+    <div class="container">
+        <div class="right__head d-flex justify-content-between align-items-center">
+            <h1 class="text-color">Found {{produtsAllSearch.length}} items</h1>
+            <div class="tools">
+                <select class="form-control"
+                        ng-model="valueSort" style="padding: 0 1rem;"
+                        ng-change="SortBy()">
+                    <option value="" selected>Featured</option>
+                    <option value="name|Ascending">Name Ascending</option>
+                    <option value="name|Descending">Name Descending</option>
+                    <option value="price.price_current|Ascending">Price Ascending</option>
+                    <option value="price.price_current|Descending">Price Descending</option>
+                </select>
+            </div>
+        </div>
+        <div ng-if="totalSearch > 0">
+            <div class="row products__wrap">
+                <div class="col-lg-3 col-md-4 col-sm-12"
+                     dir-paginate="item in productsSearch | orderBy:sortColumn:reverse | itemsPerPage:pageSize"
+                     total-items="totalSearch">
+                    <div class="single__product text-center mb-40">
+                        <div class="single__img">
+                            <img class="w-100" ng-src="{{item.image_avatar}}" alt="">
+                            <div class="overlay">
+                                <a class="btn btn-orange"
+                                   href="/Detail/Index" ng-click="goDetail(item._id)">Order Now</a>
+                            </div>
+                        </div>
+                        <div class="product__caption">
+                            <h5><a href="/Detail/Index" ng-click="goDetail(item._id)">{{item.name}}</a></h5>
+                            <div class="numbering">${{item.price.price_current}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <dir-pagination-controls max-size="maxSize"
+                                     direction-links="true"
+                                     boundary-links="true"
+                                     on-page-change="GetSearchProducts(newPageNumber)"></dir-pagination-controls>
+        </div>
+        <div ng-if="totalSearch == 0">
+            <img class="w-100" style="height: 100vh" src="~/Content/images/Empty-pana.svg" />
+        </div>
+        
+    </div>
+</div>
+

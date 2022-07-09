@@ -23,13 +23,14 @@ namespace DraShopDAO
         public void AddOrderDetail(OrderDetail orderDetail)
         {
             dh.StoreReader("AddOrderDetail", orderDetail._id, orderDetail.order_id, orderDetail.product_id,
-                orderDetail.quantity, orderDetail.price, orderDetail.image);
+                orderDetail.quantity, orderDetail.price, orderDetail.image, orderDetail.color, orderDetail.size);
         }
 
         public void UpdateOrderDetail(OrderDetail orderDetail)
         {
             dh.StoreReader("UpdateOrderDetail", orderDetail._id, orderDetail.order_id, orderDetail.product_id,
-                orderDetail.quantity, orderDetail.price, orderDetail.image);
+                orderDetail.quantity, orderDetail.price, orderDetail.image, orderDetail.color, 
+                orderDetail.size, orderDetail.flag);
         }
 
         public void DeleteOrderDetail(string _id)
@@ -55,6 +56,8 @@ namespace DraShopDAO
                     row[0].ToString(), row[1].ToString(), 
                     row[2].ToString(), int.Parse(row[3].ToString()), 
                     double.Parse(row[4].ToString()), row[5].ToString(),
+                    row[6].ToString(), row[7].ToString(),
+                    int.Parse(row[8].ToString()),
                     product);
                 list.Add(orderDetail);
             }

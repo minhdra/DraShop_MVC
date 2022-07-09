@@ -137,8 +137,11 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeAdminController.cs" />
     <Compile Include="Areas\Admin\Controllers\ManageCategoriesController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ManageCustomersController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ManageOrdersController.cs" />
     <Compile Include="Areas\Admin\Controllers\ManageProductsController.cs" />
     <Compile Include="Controllers\CartController.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
@@ -155,7 +158,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\dist\css\adminlte.css" />
-    <Content Include="Areas\Admin\dist\css\adminlte.min.css" />
     <Content Include="Areas\Admin\dist\css\alt\adminlte.components.css" />
     <Content Include="Areas\Admin\dist\css\alt\adminlte.components.min.css" />
     <Content Include="Areas\Admin\dist\css\alt\adminlte.core.css" />
@@ -168,6 +170,7 @@
     <Content Include="Areas\Admin\dist\css\alt\adminlte.pages.min.css" />
     <Content Include="Areas\Admin\dist\css\alt\adminlte.plugins.css" />
     <Content Include="Areas\Admin\dist\css\alt\adminlte.plugins.min.css" />
+    <Content Include="Areas\Admin\dist\css\login.css" />
     <Content Include="Areas\Admin\dist\css\style.css" />
     <Content Include="Areas\Admin\dist\img\AdminLTELogo.png" />
     <Content Include="Areas\Admin\dist\img\avatar.png" />
@@ -10004,13 +10007,15 @@
     <Content Include="Content\images\DS-Logo-2.png" />
     <Content Include="Content\images\DS-Logo-2.svg" />
     <Content Include="Content\images\empty-cart.jpg" />
+    <Content Include="Content\images\Empty-pana.svg" />
     <Content Include="Content\images\flag-vn.png" />
     <Content Include="Content\images\gucci\Light-Floral-print-linen-silk-kaftan.jpg" />
     <Content Include="Content\images\gucci\Light-Paisley-fan-print-tunic-shirt-MEN.jpg" />
     <Content Include="Content\images\gucci\Light-Print-silk-dress-with-scarf.jpg" />
+    <Content Include="Content\images\icon.png" />
     <Content Include="Content\images\img-2.jpg" />
     <Content Include="Content\images\img-3.jpg" />
-    <Content Include="Content\images\icon.ico" />
+    <Content Include="favicon.ico" />
     <Content Include="Content\images\logo.jpg" />
     <Content Include="Content\images\logo.png" />
     <Content Include="Content\images\LogoMakr-6KpbL7.png" />
@@ -10173,7 +10178,6 @@
     <Content Include="Content\OwlCarousel2-2.3.4\test\unit\autoplay.js" />
     <Content Include="Content\OwlCarousel2-2.3.4\test\unit\core.js" />
     <Content Include="Content\style\style-bak.css" />
-    <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\angular-animate.js" />
@@ -10402,8 +10406,6 @@
     <Content Include="Content\OwlCarousel2-2.3.4\_config.json" />
     <Content Include="Areas\Admin\Views\web.config" />
     <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
-    <Content Include="Areas\Admin\dist\css\adminlte.css.map" />
-    <Content Include="Areas\Admin\dist\css\adminlte.min.css.map" />
     <Content Include="Areas\Admin\dist\css\alt\adminlte.components.css.map" />
     <Content Include="Areas\Admin\dist\css\alt\adminlte.components.min.css.map" />
     <Content Include="Areas\Admin\dist\css\alt\adminlte.core.css.map" />
@@ -10486,6 +10488,11 @@
     <Content Include="Areas\Admin\Views\HomeAdmin\Index.cshtml" />
     <Content Include="Areas\Admin\Views\ManageProducts\ProductDetails.cshtml" />
     <Content Include="Models\DataCity.json" />
+    <Content Include="Areas\Admin\Views\Admin\Login.cshtml" />
+    <Content Include="Areas\Admin\fonts\iconmoon\fonts\icomoon.ttf" />
+    <Content Include="Areas\Admin\Views\ManageOrders\ManageOrdersView.cshtml" />
+    <Content Include="Areas\Admin\Views\ManageCustomers\ManageCustomersView.cshtml" />
+    <Content Include="Areas\Admin\Views\ManageOrders\ManageOrderDetailsView.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\FileAPI.flash.swf" />
     <Content Include="Scripts\FileAPI.js" />
@@ -11276,6 +11283,7 @@
     <Content Include="Views\Shared\_Cart.cshtml" />
     <Content Include="Views\Payment\Index.cshtml" />
     <Content Include="Views\Customer\OrderCustomer.cshtml" />
+    <Content Include="Views\Product\SearchResult.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

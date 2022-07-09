@@ -10,8 +10,10 @@ namespace DraShopDAO
     public interface IProductDAO
     {
         List<Product> GetProducts();
+        List<Product> SearchProducts(string category_id, string keyword);
         List<Product> GetProductsByCategory(string category_id);
         ProductList GetProductsByCategoryAndGender(string category_id, int gender, int pageIndex, int pageSize, string name);
+        ProductList GetProductsByCategory(string category_id, int pageIndex, int pageSize, string name);
         List<Product> GetProductsHotMen();
         List<Product> GetProductsHotWomen();
         List<Product> GetProductsBestSelling(int length);

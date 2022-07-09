@@ -43,9 +43,11 @@
   <ItemGroup>
     <Compile Include="ClientBUS.cs" />
     <Compile Include="Interfaces\IClientBUS.cs" />
+    <Compile Include="Interfaces\IManageAdminBUS.cs" />
     <Compile Include="Interfaces\IManageCategoriesBUS.cs" />
     <Compile Include="Interfaces\IManageOrderBUS.cs" />
     <Compile Include="Interfaces\IManageProductsBUS.cs" />
+    <Compile Include="ManageAdminBUS.cs" />
     <Compile Include="ManageCategoriesBUS.cs" />
     <Compile Include="ManageOrderBUS.cs" />
     <Compile Include="ManageProductBUS.cs" />

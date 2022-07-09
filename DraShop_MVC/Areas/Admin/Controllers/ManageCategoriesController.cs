@@ -8,6 +8,7 @@ using DraShopBUS;
 
 namespace DraShop_MVC.Areas.Admin.Controllers
 {
+    [Authorize]
     public class ManageCategoriesController : Controller
     {
         IManageCategoriesBUS categoriesBUS = new ManageCategoriesBUS();

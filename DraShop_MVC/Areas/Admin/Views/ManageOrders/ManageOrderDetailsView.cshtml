@@ -1,0 +1,260 @@
+﻿
+@{
+    ViewBag.Title = "ManageOrderDetailsView";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper" ng-controller="ManageOrderDetailsController">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Manage Order Details</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#" onclick="history.back()">Manage orders</a></li>
+                        <li class="breadcrumb-item active">Manage order details</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card text-center">
+                        <div class="card-header d-flex justify-content-between">
+                            <div class="d-flex w-50 justify-content-between">
+                                <select class="form-control form-control-sm mr-2"
+                                        ng-model="selectedValue"
+                                        ng-change="SortBy()">
+                                    <option value="" selected>Select field</option>
+                                    <option value="_id">Id</option>
+                                    <option value="customer">Order id</option>
+                                    <option value="address">Product id</option>
+                                    <option value="date">Quantity</option>
+                                    <option value="total">Price</option>
+                                </select>
+                                <select class="form-control form-control-sm mr-2"
+                                        ng-model="selectedSort"
+                                        ng-change="SortBy()">
+                                    <option value="" selected>Select sort</option>
+                                    <option value="Ascending">Ascending</option>
+                                    <option value="Descending">Descending</option>
+                                </select>
+                                @*<select class="form-control form-control-sm mr-2"
+                                            ng-model="filter"
+                                            ng-change="filterByStatus(filter)">
+                                        <option value="" selected>All</option>
+                                        <option value="0">Wait confirm</option>
+                                        <option value="1">Wait recieved</option>
+                                        <option value="2">Delivering</option>
+                                        <option value="3">Deliveried</option>
+                                        <option value="4">Canceled</option>
+                                    </select>*@
+                            </div>
+                            <div class="w-50 text-right">Total: {{orderDetails.length}}</div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive">
+                            <table id="table" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Order id</th>
+                                        <th>Product</th>
+                                        <th>Image</th>
+                                        <th>Color</th>
+                                        <th>Size</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Total</th>
+                                        <th>Tools</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr dir-paginate="item in orderDetails | orderBy:sortColumn:reverse | itemsPerPage:pageSize"
+                                        total-items="orders.length">
+                                        <td>{{item._id}}</td>
+                                        <td>{{item.order_id}}</td>
+                                        <td title="{{item.product_id}}"
+                                            data-tooltips="tooltip"
+                                            data-placement="bottom">
+                                            <p style="white-space: nowrap;
+                                                    text-overflow: ellipsis;
+                                                    overflow: hidden;
+                                                    width: 90px;
+                                                    ">{{item.product.name}}</p>
+                                        </td>
+                                        <td style="width: 75px; height: 75px; object-fit: cover">
+                                            <img class="w-100 h-100" ng-src="{{item.image}}" />
+                                        </td>
+                                        <td>{{item.color}}</td>
+                                        <td>{{item.size}}</td>
+                                        <td>{{item.quantity}}</td>
+                                        <td>${{item.price}}</td>
+                                        <td>${{item.quantity * item.price}}</td>
+                                        <td class="d-flex justify-content-between">
+                                            <i class="p-1 fal fa-edit" role="button"
+                                               data-toggle="modal" data-target="#updateModal"
+                                               ng-click="editOrderDetail(item, 1)"></i>
+                                            <i class="p-1 fal fa-times"
+                                               data-toggle="modal"
+                                               role="button"
+                                               data-target="#confirmModal"
+                                               ng-click="removeOrderDetail(item)"> </i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                        <dir-pagination-controls max-size="maxSize"
+                                                 direction-links="true"
+                                                 boundary-links="true"
+                                                 on-page-change="getOrderDetails(newPageNumber)"></dir-pagination-controls>
+                    </div>
+                    <!-- /.card -->
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+    <!-- Button trigger modal -->
+    <!-- Modal -->
+    <div class="modal fade" id="updateModal">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateModal">Edit detail</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered table-hover">
+                        <tbody>
+                            <tr>
+                                <td class="d-flex">
+                                    <label class="w-50">Id</label>
+                                    <input id="id" class="form-control" ng-model="detail._id" disabled />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="d-flex">
+                                    <label class="w-50">Order id</label>
+                                    <input id="id" class="form-control" ng-model="detail.order_id" disabled />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="d-flex">
+                                    <label class="w-50">Product id</label>
+                                    <input id="id" class="form-control" ng-model="detail.product_id" disabled />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="text-center">
+                                        <img class="w-50" ng-src="{{detail.image}}" />
+                                    </div>
+                                    <label for="image">Image</label>
+                                    <input id="image" class="form-control" ng-model="detail.image"
+                                           placeholder="Link image" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="list__images">
+                                        <div class="list__images-item col-lg-2 col-md-3 col-sm-4"
+                                             ng-repeat="item in images"
+                                             ng-click="detail.image = item">
+                                            <img class="w-100" ng-src="{{item}}" />
+                                        </div>
+                                    </div>
+                                    @*or*@
+                                    @*<input type="file" class="form-control-file" ngf-select="UploadFiles($file)"/>*@
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="color">Color</label>
+                                    <select class="custom-select"
+                                            ng-model="detail.color"
+                                            ng-change="editOrderDetail(detail); detail.image = images[0]">
+                                        <option ng-repeat="item in colors"
+                                                value="{{item}}">
+                                            {{item}}
+                                        </option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="quantity">Size</label>
+                                    <select class="custom-select"
+                                            ng-model="detail.size">
+                                        <option ng-repeat="item in sizes"
+                                                value="{{item.size}}">
+                                            {{item.size}}
+                                        </option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="quantity">Quantity</label>
+                                    <input id="quantity" class="form-control" ng-model="detail.quantity"
+                                           type="number" min="1" max="{{maxQuantity}}" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Back</button>
+                    <button type="button" class="btn btn-danger"
+                            ng-click="save(detail, 1)">
+                        Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="confirmModal">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Warning</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <img class="w-50" src="https://image.freepik.com/free-vector/warning-concept-illustration_114360-1492.jpg" />
+                    <br />
+                    Are you sure delete?
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Back</button>
+                    <button type="button" class="btn btn-danger"
+                            ng-click="save(detail, 0)">
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- /.content-wrapper -->

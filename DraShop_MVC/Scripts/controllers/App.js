@@ -29,7 +29,13 @@ function HomeController($scope) {
 app.controller('MenuController', MenuController);
 async function MenuController($scope, $rootScope, $http) {
     const url = '/Category/GetCategories';
+    const URL_SearchProducts = '/Product/SearchProducts';
+    $scope.maxSize = 3;
+    $rootScope.totalCount = 0;
+    $scope.pageIndex = 1;
+    $scope.pageSize = 9;
 
+    // Get Categories
     await $http({
         method: 'GET',
         url
@@ -39,41 +45,70 @@ async function MenuController($scope, $rootScope, $http) {
             reject => console.log(reject)
     );
 
+    // Selected category
     $scope.selectCategory = (event, id, name, gender) =>
     {
-        const dropItems = $('header .dropdown-item');
-        dropItems.removeClass('active');
-        $(event).addClass('active');
+        //const dropItems = $('header .dropdown-item');
+        //dropItems.removeClass('active');
+        //$(event).addClass('active');
         localStorage.setItem('selectedCate', JSON.stringify({ id, name, gender }));
     };
 
+    // Toggle show cart
     $scope.toggleCart = () => {
         $('.cart__wrap').addClass('show');
         $('.cart__overlay').addClass('show');
         $('body').css('overflow', 'hidden');
     }
 
+    // Sign out
     $scope.signOut = () => {
         localStorage.removeItem('customer');
         window.location.reload();
     }
 
-    //
+    // Disable default event
     $scope.cancelClick = (e) => {
         e.stopPropagation();
         e.preventDefault();
     }
 
-    
+    // Search start
+    // Open search
+    $scope.openSearchForm = () => {
+        $('.s003').removeClass('d-none');
+        $('.s003').addClass('d-flex');
+    }
+    // Close search
+    $scope.close = (e) => {
+        $(e.path[0]).addClass('d-none');
+        $(e.path[0]).removeClass('d-flex');
+    }
+    // Go search
+    $rootScope.GoSearch = async (keyword) => {
+        const category_id = $scope.category_id ? $scope.category_id : "";
+        await $http({
+            method: 'GET',
+            url: URL_SearchProducts,
+            params: { category_id, keyword }
+        }).then(response => {
+            sessionStorage.setItem('productsSearch', JSON.stringify({ list: response.data, keyword }));
+        }, reject => console.log(reject));
+
+        //window.location.href = '/'
+        location.href = '/Product/SearchResult';
+    }
+    // Search end
+
     // change class 
     function changeClass() {
-            const navItems = $('header .nav-item');
-            navItems.click(function () {
-                    const text = $(this).find('.nav-link').text().trim().toLowerCase();
-                    sessionStorage.setItem('classBody', text);
-            });
+        const navItems = $('header .nav-item');
+        navItems.click(function () {
+            const text = $(this).find('.nav-link').text().trim().toLowerCase();
+            sessionStorage.setItem('classBody', text);
+        });
     }
-    changeClass();
+    //changeClass();
 
     //
     const customer = JSON.parse(localStorage.getItem('customer'));
@@ -88,7 +123,7 @@ async function MenuController($scope, $rootScope, $http) {
     }
 }
 
-// Get Product
+// Product
 app.controller('ProductController', ProductController);
 async function ProductController($rootScope, $scope, $http) {
     // Set padding
@@ -100,6 +135,17 @@ async function ProductController($rootScope, $scope, $http) {
     $rootScope.sortColumn = '_id';
     $rootScope.reverse = true;
     $rootScope.direct = 'Ascending'; // or Descending
+    // init pagination
+    $scope.maxSize = 3;
+    $rootScope.totalCount = 0;
+    $scope.pageIndex = 1;
+    $scope.pageSize = 9;
+    $scope.keyword = '';
+    // get selected category
+    const categorySelected = JSON.parse(localStorage.getItem("selectedCate"));
+    const urlPage = '/Product/GetProductsByCategoryAndGender';
+    const urlSearch = '/Product/GetProductsByCategory';
+    const productsSearch = JSON.parse(sessionStorage.getItem('productsSearch'));
     // Handle sort
     $scope.SortBy = () => {
         const value = $scope.valueSort.split('|');
@@ -115,40 +161,56 @@ async function ProductController($rootScope, $scope, $http) {
         }
     }
 
+    // Handel sort
+    if (productsSearch) 
+        $scope.produtsAllSearch = productsSearch.list;
+    //console.log($scope.productsSearch);
+    $scope.GetSearchProducts = async (index) => {
+        const pageSize = 8;
+        const keyword = productsSearch?.keyword || '';
+        // Set params
+        const options = {
+            category_id: categorySelected.id.trim(),
+            gender: 2,
+            pageIndex: index,
+            pageSize: pageSize,
+            name: keyword
+        }
+        await $http({
+            method: 'GET',
+            url: urlSearch,
+            params: options
+        }).then(response => {
+            $scope.productsSearch = response.data.listProducts;
+            $scope.totalSearch = response.data.totalCount;
+        }, reject => console.log(reject));
+    }
+    $scope.GetSearchProducts($scope.pageIndex);
+
     // Get items
-    // init pagination
-    $scope.maxSize = 3;
-    $rootScope.totalCount = 0;
-    $scope.pageIndex = 1;
-    $scope.pageSize = 9;
-    $scope.keyword = '';
-    // get selected category
-    const categorySelected = JSON.parse(localStorage.getItem("selectedCate"));
-    const urlPage = '/Product/GetProductsByCategoryAndGender';
+    
     if (categorySelected) {
         $scope.selectedName = categorySelected.name;
         // Handle get products
-        $scope.GetProducts = async (index) => {
+        $scope.GetProducts = async (index, keyword) => {
             // Set params
             const options = {
                 category_id: categorySelected.id.trim(),
                 gender: categorySelected.gender,
                 pageIndex: index,
                 pageSize: $scope.pageSize,
-                name: $scope.keyword
+                name: keyword
             }
             await $http({
                 method: 'GET',
                 url: urlPage,
                 params: options
             }).then(response => {
-                //console.log(response.data);
-                
                 $scope.products = response.data.listProducts;
                 $rootScope.totalCount = response.data.totalCount;
             }, reject => console.log(reject));
         }
-        $scope.GetProducts($scope.pageIndex);
+        $scope.GetProducts($scope.pageIndex, $scope.keyword);
     }
     else {
         // Get all
@@ -162,20 +224,6 @@ async function ProductController($rootScope, $scope, $http) {
                 reject => console.log(reject)
             );
     }
-    
-
-    // Get by category
-    //const urlGetByCate = '/Product/GetProductsByCategory';
-    //console.log($rootScope.selectedCateId);
-    //const category_id = categorySelected.id;
-    //await $http({
-    //    method: 'GET',
-    //    url: urlGetByCate,
-    //    params: { category_id }
-    //})
-    //    .then(response => $scope.products_cate = response.data.products,
-    //        reject => console.log(reject));
-    //console.log($scope.products_cate);
 
     $rootScope.goDetail = (id) =>
         sessionStorage.setItem('selectedProduct', id);
@@ -351,6 +399,7 @@ function ClientSlideController($rootScope, $scope, $http) {
             $scope.productsHotMen = [];
             $scope.productsHotWomen = [];
             response.data.products.forEach(item => {
+                console.log(item)
                 if (item.gender == 0)
                     $scope.productsHotMen.push(item);
                 else
@@ -400,7 +449,8 @@ function ClientSlideController($rootScope, $scope, $http) {
                 margin: 10,
                 //autoplay: true,
                 autoHeight: true,
-                loop: true,
+                loop: false,
+                lazyLoad: true,
                 responsiveClass: true,
                 video: true,
                 responsive: {
@@ -449,7 +499,7 @@ function DetailController($rootScope, $scope, $http) {
             $('.owl-carousel').owlCarousel('destroy');
             $scope.index = index;
             $('.product__visual__list').addClass('owl-carousel');
-            console.log($scope.indexSize);
+            //console.log($scope.indexSize);
             setTimeout(() => {
                 setupSlider()
                 $(`.product__details-size li:nth-child(${$scope.indexSize + 1})`).addClass('active');
@@ -796,7 +846,7 @@ async function PaymentController($rootScope, $scope, $http) {
         phone_number: '',
         province: '',
         district: '',
-        communce: '',
+        commune: '',
         specific_address: '',
         type_address: '',
         status: 0
@@ -822,6 +872,7 @@ async function PaymentController($rootScope, $scope, $http) {
         }).then(response => {
             $scope.listAddress = response.data;
             // Set status
+            if (!$scope.listAddress) $scope.listAddress = [];
             $scope.listAddress.forEach(item => {
                 if (item.status == 1) {
                     $scope.address = item;
@@ -867,7 +918,6 @@ async function PaymentController($rootScope, $scope, $http) {
         address.customer_id = customer._id;
         address.type_address = type_address;
         address.status = isDefault ? 1 : 0;
-
         $http({
             method: 'POST',
             url: urlAddAddress,
@@ -875,13 +925,12 @@ async function PaymentController($rootScope, $scope, $http) {
         }).then(response => {
             if (response.data.status == 1) $scope.address = response.data;
             $scope.listAddress.push(response.data);
+            if (!customer.deliveryAddress) customer.deliveryAddress = [];
             customer.deliveryAddress.push(response.data);
             localStorage.setItem('customer', JSON.stringify(customer));
             //console.log(response.data);
-        })
-
-
-        $('#ModalAddAddress').modal('hide');
+        }, reject => console.log(reject));
+            $('#ModalAddAddress').modal('hide');
     }
     $scope.ConfirmAddress = () => {
         const list = $('.list__address li');
@@ -921,10 +970,11 @@ async function PaymentController($rootScope, $scope, $http) {
                 orderDetail.quantity = item.quantity;
                 orderDetail.price = item.price;
                 orderDetail.image = item.image;
+                orderDetail.color = item.color;
+                orderDetail.size = item.size;
                 orderDetails.push(orderDetail);
-            }  
-        })
-        //console.log(order, orderDetails);
+            }
+        });
         $http({
             method: 'POST',
             url: urlAddOrder,
@@ -944,6 +994,7 @@ app.controller('OrderCustomerController', OrderCustomerController);
 function OrderCustomerController($scope, $http) {
     // init
     const urlGetOrder = '/Order/GetOrder';
+    const URL_UpdateOrder = '/Order/UpdateOrder';
     const customer = JSON.parse(localStorage.getItem('customer'));
     $scope.customer = customer;
     const handleGet = () => {
@@ -958,18 +1009,41 @@ function OrderCustomerController($scope, $http) {
             $scope.orders2 = [];
             $scope.orders3 = [];
             $scope.orders4 = [];
+            $scope.orders5 = [];
             orders.forEach(order => {
                 //console.log(order)
+                const date = new Date(order.date_create);
+                order.date_create = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
                 if (order.status == 0) $scope.orders0.push(order);
                 else if (order.status == 1) $scope.orders1.push(order);
                 else if (order.status == 2) $scope.orders2.push(order);
                 else if (order.status == 3) $scope.orders3.push(order);
-                else $scope.orders4.push(order);
+                else if (order.status == 4) $scope.orders4.push(order);
+                else $scope.orders5.push(order);
             });
             //console.log($scope.orders0)
         }, reject => console.log(reject));
     }
     handleGet();
+
+    $scope.getOrder = (order) => {
+        $scope.order = order;
+    }
+
+    $scope.cancelOrder = () => {
+        $scope.order.status = 5;
+        $http({
+            method: 'POST',
+            url: URL_UpdateOrder,
+            data: { order: $scope.order }
+        }).then(response => {
+            const index = $scope.orders0.findIndex(item => item._id == $scope.order._id);
+            //$scope.orders0[index].status = $scope.order.status;
+
+            handleGet();
+            $('#modalCancelOrder').modal('hide');
+        }, reject => console.log(reject));
+    }
 }
 
 

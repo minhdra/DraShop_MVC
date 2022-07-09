@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace DraShop_MVC.Areas.Admin.Controllers
 {
+    [Authorize]
     public class HomeAdminController : Controller
     {
         // GET: Admin/HomeAdmin

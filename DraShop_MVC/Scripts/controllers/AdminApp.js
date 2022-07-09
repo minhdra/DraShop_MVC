@@ -9,9 +9,78 @@ $(document).ready(function () {
 
 const app = angular.module('AdminApp', ['ngFileUpload', 'angularUtils.directives.dirPagination']);
 
+const URL_GetOrders = '/Admin/ManageOrders/GetOrders';
+
+const URL_GetAccountCustomer = '/Admin/ManageCustomers/GetCustomers';
+
+// Home
+app.controller('HomeController', HomeController);
+function HomeController($scope, $http) {
+    // Get new orders
+    (function () {
+        const newOrders = [];
+        $http({
+            method: 'GET',
+            url: URL_GetOrders
+        }).then(response => {
+            response.data.forEach(item => {
+                if (item.status == 0 && item.flag == 1)
+                    newOrders.push(item);
+            });
+            $scope.newOrders = newOrders;
+        }, reject => console.log(reject));
+    })();
+    // Get user registrations
+    (function () {
+        const userRegistrations = [];
+        $http({
+            method: 'GET',
+            url: URL_GetAccountCustomer
+        }).then(response => {
+            response.data.forEach(item => {
+                if (item.status == 0)
+                    userRegistrations.push(item);
+            });
+            $scope.userRegistrations = userRegistrations;
+        }, reject => console.log(reject));
+    })();
+
+    $scope.GoOrdersView = (status) => {
+        sessionStorage.setItem('statusOrder', status);
+    }
+}
+
+// Sidebar
+app.controller('SidebarController', SidebarController);
+function SidebarController($rootScope, $scope, $http) {
+    const admin = JSON.parse(localStorage.getItem('admin'));
+    const URL_SignOut = '/Admin/Admin/SignOut';
+
+    $scope.admin = admin;
+    $scope.SignOut = () => {
+        sessionStorage.removeItem('admin');
+        $http({
+            method: 'POST',
+            url: URL_SignOut
+        }).then(response => console.log(response.status), reject => console.log(reject));
+        GoLogin();
+    }
+
+    function GoLogin() {
+        function disableBack() { window.history.forward(); }
+        setTimeout(disableBack, 0);
+        window.onunload = function () { null };
+        window.location.href = '/Admin/Admin/Login';
+    }
+
+    $scope.GoOrdersView = (status) => {
+        sessionStorage.setItem('statusOrder', status);
+    }
+}
+
 // Manage products
-app.controller('ManageProducts', ManageProducts);
-async function ManageProducts($rootScope, $scope, $http) {
+app.controller('ManageProductsController', ManageProductsController);
+async function ManageProductsController($rootScope, $scope, $http) {
     const urlGetProducts = '/Product/GetProducts';
     const urlGetProductsPagination = '/Product/GetProductsPagination';
     const urlGetCategories = '/Category/GetCategories';
@@ -65,7 +134,7 @@ async function ManageProducts($rootScope, $scope, $http) {
 
     if (categorySelected) {
         $scope.selectedName = categorySelected.name;
-        $scope.GetProuducts = async (index) => {
+        $scope.GetProducts = async (index) => {
             //console.log(index);
             const urlPage = '/Product/GetProductsPagination';
             const options = {
@@ -84,7 +153,7 @@ async function ManageProducts($rootScope, $scope, $http) {
                 $rootScope.totalCount = response.data.totalCount;
             }, reject => console.log(reject));
         }
-        $scope.GetProuducts($scope.pageIndex);
+        $scope.GetProducts($scope.pageIndex);
     }
     else
         await $http({
@@ -180,8 +249,8 @@ async function ManageProducts($rootScope, $scope, $http) {
 }
 
 // Products Details
-app.controller('ManageProductDetails', ManageProductDetails);
-async function ManageProductDetails($rootScope, $scope, $http) {
+app.controller('ManageProductDetailsController', ManageProductDetailsController);
+async function ManageProductDetailsController($rootScope, $scope, $http) {
     // init
     const urlGetProductDetails = '/Detail/GetProduct';
     const urlGetProductColors = '/Admin/ManageProducts/GetProductColors';
@@ -247,10 +316,11 @@ async function ManageProductDetails($rootScope, $scope, $http) {
             })
             //color[index].size.sort(compare);
         });
-        $scope.colors = colors;
-        $scope.size.product_color_id = colors[0]._id;
+            $scope.colors = colors;
+        if (colors.length > 0) {
+            $scope.size.product_color_id = colors[0]._id;
+        }
     }, reject => console.log(reject));
-
     // Get all
 
     // Set style
@@ -266,8 +336,11 @@ async function ManageProductDetails($rootScope, $scope, $http) {
 
     // Confirm image
     $scope.confirmImage = (link_img) => {
-        $scope.color.image.push(link_img);
-        $scope.colorImg = '';
+        if ($scope.color.image.indexOf(link_img) === -1) {
+            $scope.color.image.push(link_img);
+
+        }
+            $scope.colorImg = '';
     }
 
     // Remove image
@@ -338,8 +411,9 @@ async function ManageProductDetails($rootScope, $scope, $http) {
                 data: { color: tmp },
             }).then(response => {
                 const c = response.data;
-                $scope.colors = [c, ...$scope.colors];
-                console.log('Add color with status: ' + response.status);
+                c.image = item.image;
+                $scope.colors.unshift(c);
+                //console.log('Add color with status: ' + response.status);
             },
                 reject => console.log(reject));
         else
@@ -350,7 +424,6 @@ async function ManageProductDetails($rootScope, $scope, $http) {
             }).then(response => {
                 $scope.colors.forEach(i => {
                     if (i._id.trim() == item._id.trim()) {
-                        console.log(i, item);
                         i.hex = item.hex;
                         i.color = item.color;
                         i.image = item.image;
@@ -358,10 +431,10 @@ async function ManageProductDetails($rootScope, $scope, $http) {
                     }
                 });
                 $('.owl-carousel').owlCarousel('destroy');
-                console.log('Update color with status: ' + response.status)
+                //console.log('Update color with status: ' + response.status)
             },
                 reject => console.log(reject));
-        setupSlider();
+        await setupSlider();
         $('#ModalColor').modal('hide');
     }
 
@@ -392,23 +465,41 @@ async function ManageProductDetails($rootScope, $scope, $http) {
     $scope.saveSize = async (item, event) => {
         const tmp = angular.copy(item);
         // Add size
-        if (event === 0)
-            await $http({
-                method: 'POST',
-                url: urlAddSize,
-                data: { size: tmp },
-            }).then(response => {
-                const s = response.data;
-                $scope.colors.forEach(i => {
-                    if (i._id.trim() === s.product_color_id.trim()) {
-                        i.size = [s, ...i.size];
-                        return;
-                    }
-                });
-                //$scope.colors.size = [item, ...$scope.colors.size];
-                console.log('Add size with status: ' + response.status);
-            },
-                reject => console.log(reject));
+        if (event === 0) {
+            const indexColor = $scope.colors.findIndex(value => value._id === tmp.product_color_id);
+            const indexSize = $scope.colors[indexColor].size.findIndex(value => value.size === tmp.size);
+            if (indexSize >= 0) {
+                tmp._id = $scope.colors[indexColor].size[indexSize]._id;
+                tmp.quantity += $scope.colors[indexColor].size[indexSize].quantity;
+                await $http({
+                    method: 'POST',
+                    url: urlUpdateSize,
+                    data: { size: tmp },
+                }).then(response => {
+                    $scope.colors[indexColor].size[indexSize].quantity = tmp.quantity;
+                    console.log('Update color with status: ' + response.status)
+                }, reject => console.log(reject));
+            }
+            else {
+                await $http({
+                    method: 'POST',
+                    url: urlAddSize,
+                    data: { size: tmp },
+                }).then(response => {
+                    const s = response.data;
+                    $scope.colors.forEach(i => {
+                        if (i._id.trim() === s.product_color_id.trim()) {
+
+                            i.size = [s, ...i.size];
+                            return;
+                        }
+                    });
+                    //$scope.colors.size = [item, ...$scope.colors.size];
+                    console.log('Add size with status: ' + response.status);
+                },
+                    reject => console.log(reject));
+            }
+        }
         else
             await $http({
                 method: 'POST',
@@ -471,50 +562,220 @@ async function ManageProductDetails($rootScope, $scope, $http) {
     //await setTimeout(setupSlider, 500);
 }
 
-function GenerateProductId(products) {
-    let ran = Math.floor(Math.random() * 100);
-    let id = "P" + ran;
-    for (let i = 0; i < products.length; i++) {
-        if (products[i]._id.trim() === id) {
-            id = "P" + ran;
-            i--;
+// Login 
+app.controller('LoginController', LoginController);
+function LoginController($rootScope, $scope, $http) {
+    // Css
+    (function () {
+        const formGroup = $('.form-group');
+        $scope.ChangeUsername = (username) => {
+            if (username.trim() === "") $(formGroup[0]).removeClass('field--not-empty');
+            else $(formGroup[0]).addClass('field--not-empty');
         }
+
+        $scope.ChangePassword = (password) => {
+        if (password.trim() === "") $(formGroup[1]).removeClass('field--not-empty');
+        else $(formGroup[1]).addClass('field--not-empty');
     }
-    return id;
+    })();
+
+    const URL_GetAdmin = '/Admin/Admin/GetAdmin';
+
+    $scope.Login = (username, password) => {
+        $http({
+            method: 'POST',
+            url: URL_GetAdmin,
+            params: { username, password },
+        }).then(response => {
+            // Login fail
+            $rootScope.admin = response.data;
+            if (response.data == "") {
+                // Remove success and show error alert
+                $('.alert-success').removeClass('show').hide();
+                $('.alert-danger').addClass('show').show();
+                // Set value for alert
+                $scope.failure = 'Username or password not correct!';
+                // Hide alert after time
+                setTimeout(() => $('.alert-danger').removeClass('show').hide(), 3000);
+            }
+            // Login success
+            else {
+                // Remove error and show success alert
+                $('.alert-danger').removeClass('show').hide();
+                $('.alert-success').addClass('show').show();
+                // Declare variable customer and set local storage
+                //$rootScope.admin = response.data;
+                localStorage.setItem('admin', JSON.stringify($scope.admin));
+                // Set value for alert
+                $scope.success = 'Login success.';
+                // Set time
+
+
+                // Hide alert after time
+                setTimeout(() => {
+                    $('.alert-success').removeClass('show').hide();
+                    window.location.href = '/Admin/HomeAdmin/Index';
+                }, 2000);
+            }
+        }, reject => console.log(reject));
+    }
 }
 
-function GenerateProductColorId(colors) {
-    let ran = Math.floor(Math.random() * 100);
-    let id = ran;
-    for (let i = 0; i < colors.length; i++) {
-        if (colors[i]._id.trim() == id) {
-            id = ran;
-            i = -1;
+// Manage orders
+app.controller('ManageOrdersController', ManageOrdersController);
+function ManageOrdersController($scope, $rootScope, $http) {
+    const URL_UpdateOrder = '/Admin/ManageOrders/UpdateOrder';
+    let details = [], orders = [], ordersCanceled = [];
+    const statusOrder = sessionStorage.getItem('statusOrder') | '';
+    $scope.filter = statusOrder.toString();
+    // Sort
+    $scope.sortColumn = '';
+    $scope.reverse = true;
+    $scope.direct = ''; // or Descending
+    $scope.SortBy = () => {
+        if ($scope.selectedSort) {
+            const value = $scope.selectedValue;
+            $scope.sortColumn = value;
+            $scope.direct = $scope.selectedSort;
+            if ($scope.direct === 'Ascending') {
+                $scope.reverse = false;
+                $scope.direct = 'Descending';
+            }
+            else if ($scope.direct === 'Descending') {
+                $scope.reverse = true;
+                $scope.direct = 'Ascending';
+            }
+
         }
     }
-    return id + '';
+    // Get orders
+    $scope.filterByStatus = function (filter) {
+        $http({
+            method: 'GET',
+            url: URL_GetOrders
+        }).then(response => {
+            orders = [];
+            ordersCanceled = [];
+            response.data.forEach(order => {
+                if (order.status == 5 && order.flag == 1)
+                    ordersCanceled.push(order);
+                if ((filter == '' || filter == order.status) && order.flag == 1)
+                    orders.push(order);
+            })
+            $scope.orders = orders;
+            $scope.ordersCanceled = ordersCanceled;
+        }, reject => console.log(reject));
+    }; $scope.filterByStatus($scope.filter);
+
+    // Get order when click
+    $scope.getStatus = (order) => {
+        $scope.order = angular.copy(order);
+    }
+    // Change status of orders
+    $scope.confirmSwitch = (option) => {
+        if (option == 0) {
+            if ($scope.order.status != 0)
+                $scope.order.status = $scope.order.status - 1;
+        }
+        else if (option == 1) {
+            if ($scope.order.status != 3)
+                $scope.order.status = $scope.order.status + 1;
+        }
+        else if (option == 2)
+            $scope.order.status = 5;
+        else
+            $scope.order.flag = 0;
+        $http({
+            method: 'POST',
+            url: URL_UpdateOrder,
+            data: { order: $scope.order }
+        }).then(response => {
+            const index = $scope.orders.findIndex(item => item._id === $scope.order._id);
+            if (option != 3)
+                $scope.orders[index].status = $scope.order.status;
+            else {
+                $scope.ordersCanceled.push($scope.orders[index]);
+                $scope.orders.splice(index, 1);
+            }
+
+            $scope.filterByStatus($scope.filter);
+            $('#confirmModal').modal('hide'); $('#confirmRemove').modal('hide');
+        }, reject => console.log(reject));
+    }
+    // Go order details view
+    $scope.goDetails = (order_id) => {
+        $rootScope.order_id = order_id;
+        sessionStorage.setItem('order_id', order_id);
+        location.href = '/Admin/ManageOrders/ManageOrderDetailsView';
+    }
+
+
 }
 
-function GenerateProductSizeId(sizes) {
-    let ran = Math.floor(Math.random() * 100);
-    let id = ran;
-    for (let i = 0; i < sizes.length; i++) {
-        if (sizes[i]._id.trim() == id) {
-            id = ran;
-            i = -1;
-        }
-    }
-    return id + '';
-}
+// Manage order details
+app.controller('ManageOrderDetailsController', ManageOrderDetailsController);
+function ManageOrderDetailsController($rootScope, $scope, $http) {
+    const URL_GetOrderDetails = '/Admin/ManageOrders/GetOrderDetails';
+    const URL_UpdateOrderDetail = '/Admin/ManageOrders/UpdateOrderDetail';
+    const order_id = sessionStorage.getItem('order_id');
 
-function GenerateProductPriceId(prices) {
-    let ran = Math.floor(Math.random() * 100);
-    let id = ran;
-    for (let i = 0; i < prices.length; i++) {
-        if (colors[i]._id.trim() == id) {
-            id = ran;
-            i--;
-        }
+    $scope.getOrderDetails = () => {
+        $http({
+            method: 'GET',
+            url: URL_GetOrderDetails,
+            params: { order_id }
+        }).then(response => {
+            $scope.orderDetails = [];
+            response.data.forEach(item => {
+                if (item.flag == 1)
+                    $scope.orderDetails.push(item);
+            })
+            //console.log(response.data)
+        }, reject => console.log(reject));
+    }; $scope.getOrderDetails();
+
+    $scope.editOrderDetail = (detail) => {
+        $scope.detail = angular.copy(detail);
+        $scope.getFieldsProduct(detail.product_id, detail.color, detail.size);
     }
-    return id + '';
+    $scope.removeOrderDetail = (detail) => $scope.detail = angular.copy(detail);
+
+
+    $scope.getFieldsProduct = (product_id, color, size) => {
+        $scope.images = [];
+        $scope.colors = [];
+        $scope.sizes = [];
+        const index = $scope.orderDetails.findIndex(item => item.product_id === product_id);
+        $scope.orderDetails[index].product.ListColor.forEach(item => {
+            $scope.colors.push(item.color);
+            if (color === item.color) {
+                const tmp = item.image.split(', ');
+                $scope.images = [...$scope.images, ...tmp];
+                item.ListSize.forEach(s => {
+                    if (size === s.size) $scope.maxQuantity = s.quantity;
+                    if (s.quantity > 0)
+                        $scope.sizes.push(s);
+                });
+            }
+            
+        });
+    }
+
+    $scope.save = (detail, flag) => {
+        if (flag == 0) detail.flag = flag;
+        $http({
+            method: 'POST',
+            url: URL_UpdateOrderDetail,
+            data: { detail }
+        }).then(response => {
+            const index = $scope.orderDetails.findIndex(item => item._id === detail._id);
+            if (flag == 0)
+                $scope.orderDetails.splice(index, 1);
+            else
+                $scope.orderDetails[index] = detail;
+        }, reject => console.log(reject));
+
+        $('#updateModal').modal('hide');
+        $('#confirmModal').modal('hide');
+    }
 }

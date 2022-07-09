@@ -36,7 +36,7 @@ namespace DraShopDAO
         public void UpdateOrder(Order order)
         {
             dh.StoreReader("UpdateOrder", order._id, DateTime.Parse(order.date_create), order.address, order.total,
-                order.status, order.customer_id);
+                order.status, order.customer_id, order.flag);
         }
 
         public void DeleteOrder(string _id)
@@ -57,6 +57,7 @@ namespace DraShopDAO
                 Order order = new Order(row[0].ToString(), row[1].ToString(),
                     row[2].ToString(), double.Parse(row[3].ToString()),
                     int.Parse(row[4].ToString()), row[5].ToString(),
+                    int.Parse(row[6].ToString()),
                     orderDetails);
                 list.Add(order);
             }

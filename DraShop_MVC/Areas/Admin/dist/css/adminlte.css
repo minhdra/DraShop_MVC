@@ -12602,13 +12602,27 @@ body:not(.layout-fixed) .main-sidebar .sidebar {
 
 .user-panel,
 .user-panel .info {
-  overflow: hidden;
+  /*overflow: hidden;*/
   white-space: nowrap;
 }
 
+.user-panel .dropdown-menu {
+    background-color: #343a40;
+    border-color: var(--white);
+}
+
+.user-panel .dropdown-menu .dropdown-item {
+    color: var(--white) !important;
+    cursor: default;
+}
+
+.user-panel .dropdown-menu .dropdown-item:hover {
+    color: #343a40 !important;
+}
+
 .user-panel .image {
-  display: inline-block;
-  padding-left: 0.8rem;
+    display: inline-block;
+    padding-left: 0.8rem;
 }
 
 .user-panel img {

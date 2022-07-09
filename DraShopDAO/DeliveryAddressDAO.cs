@@ -25,21 +25,21 @@ namespace DraShopDAO
             string sqlQuery = customer_id == "" ? "select * from dra_delivery_address" :
                "select * from dra_delivery_address where customer_id ='" + customer_id + "'";
             DataTable dt = dh.GetDataTable(sqlQuery);
-            return ToList(dt).Count > 0 ? ToList(dt) : null;
+            return ToList(dt);
         }
 
         public void CreateDeliveryAddress(DeliveryAddress address)
         {
             dh.StoreReader("CreateDeliveryAddress", address._id, address.customer_id,
                 address.customer_name, address.phone_number, address.province, address.district,
-                address.communce, address.specific_address, address.type_address, address.status);
+                address.commune, address.specific_address, address.type_address, address.status);
         }
 
         public void UpdateDeliveryAddress(DeliveryAddress address)
         {
             dh.StoreReader("UpdateDeliveryAddress", address._id, address.customer_id,
                 address.customer_name, address.phone_number, address.province, address.district,
-                address.communce, address.specific_address, address.type_address, address.status);
+                address.commune, address.specific_address, address.type_address, address.status);
         }
 
         public void DeleteDeliveryAddress(string _id)

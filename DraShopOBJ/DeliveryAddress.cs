@@ -14,7 +14,7 @@ namespace DraShopOBJ
         public string phone_number { get; set; }
         public string province { get; set; }
         public string district { get; set; }
-        public string communce { get; set; }
+        public string commune { get; set; }
         public string specific_address { get; set; }
         public string type_address { get; set; }
         public int status { get; set; }
@@ -23,7 +23,7 @@ namespace DraShopOBJ
         public DeliveryAddress(string _id, string customer_id,
             string customer_name, string phone_number,
             string province, string district,
-            string communce, string specific_address,
+            string commune, string specific_address,
             string type_address, int status)
         {
             this._id = _id;
@@ -32,7 +32,7 @@ namespace DraShopOBJ
             this.phone_number = phone_number;
             this.province = province;
             this.district = district;
-            this.communce = communce;
+            this.commune = commune;
             this.specific_address = specific_address;
             this.type_address = type_address;
             this.status = status;

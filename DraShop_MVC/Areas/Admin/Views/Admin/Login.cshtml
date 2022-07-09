@@ -1,0 +1,89 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dra - Login admin</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&amp;display=swap" rel="stylesheet">
+    <link href="~/Content/bootstrap-4.6.0-dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/Fontawesome-5.15.3/css/all.min.css" rel="stylesheet" />
+    <link href="~/Areas/Admin/dist/css/login.css" rel="stylesheet" />
+</head>
+<body ng-app="AdminApp">
+    <div class="content position-relative" ng-controller="LoginController">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="https://preview.colorlib.com/theme/bootstrap/login-form-07/images/undraw_remotely_2j6y.svg" alt="Image" class="img-fluid">
+                </div>
+                <div class="col-md-6 contents">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="mb-4">
+                                <h3>Sign In</h3>
+                                <p class="mb-4">
+                                    You need to login to continue!
+                                </p>
+                            </div>
+                            <form method="get">
+                                <div class="form-group first">
+                                    <label for="username">Username</label>
+                                    <input type="text"
+                                           class="form-control" id="username"
+                                           ng-model="username"
+                                           ng-change="ChangeUsername(username)">
+                                </div>
+                                <div class="form-group last mb-4">
+                                    <label for="password">Password</label>
+                                    <input type="password" autocomplete="off"
+                                           class="form-control" id="password"
+                                           ng-model="password"
+                                           ng-change="ChangePassword(password)">
+                                </div>
+                                <div class="d-flex mb-5 align-items-center">
+                                    <label class="control control--checkbox mb-0">
+                                        <span class="caption">Remember me</span>
+                                        <input type="checkbox" checked="">
+                                        <div class="control__indicator"></div>
+                                    </label>
+                                    <span class="ml-auto"><a href="#" class="forgot-pass">Forgot Password</a></span>
+                                </div>
+                                <button type="submit" class="btn btn-block btn-primary"
+                                        ng-click="Login(username, password)">
+                                    Log In
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="alert__wrap">
+            <div class="alert alert-success alert-dismissible fade hide" role="alert">
+                <strong>Congratulate!</strong> {{success}}
+                <a class="alert-link" href="/Admin/HomeAdmin/Index"
+                   style="text-decoration: underline;">Go home</a>
+                <button type="button" class="close" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="alert alert-danger alert-dismissible fade hide" role="alert">
+                <strong>Oh no!</strong> {{failure}}
+                <button type="button" class="close" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <script src="~/Areas/Admin/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="~/Scripts/ng-file-upload-all.min.js"></script>
+    <script src="~/Scripts/dirPagination.js"></script>
+    <script src="~/Scripts/controllers/AdminApp.js"></script>
+</body>
+</html>
+

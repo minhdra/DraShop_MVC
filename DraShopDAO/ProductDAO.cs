@@ -17,6 +17,16 @@ namespace DraShopDAO
             return toList(dt);
         }
 
+        public List<Product> SearchProducts(string category_id, string keyword)
+        {
+            string sqlQuery;
+            if (category_id.Trim() == "") sqlQuery = "select * from dra_product where name like '%" + keyword + "%'";
+            else sqlQuery = "Select * from dra_product where category_id='" + category_id + "'" +
+                " and name like '%" + keyword + "%'";
+            DataTable dt = dh.GetDataTable(sqlQuery);
+            return toList(dt);
+        }
+
         public List<Product> GetProductsByCategory(string category_id)
         {
             string sqlQuery;
@@ -41,7 +51,7 @@ namespace DraShopDAO
                     dr[3].ToString(), dr[4].ToString(),
                     dr[5].ToString(), dr[6].ToString(),
                     dr[7].ToString(), dr[8].ToString(),
-                    dr[9].ToString(), dr[10].ToString(),
+                    dr[9].ToString(),
                     colors, price);
                 l.Add(product);
             }
@@ -64,7 +74,7 @@ namespace DraShopDAO
                     dr[3].ToString(), dr[4].ToString(),
                     dr[5].ToString(), dr[6].ToString(),
                     dr[7].ToString(), dr[8].ToString(),
-                    dr[9].ToString(), dr[10].ToString(),
+                    dr[9].ToString(),
                     colors, price);
                 l.Add(product);
             }
@@ -87,7 +97,7 @@ namespace DraShopDAO
                     dr[3].ToString(), dr[4].ToString(),
                     dr[5].ToString(), dr[6].ToString(),
                     dr[7].ToString(), dr[8].ToString(),
-                    dr[9].ToString(), dr[10].ToString(),
+                    dr[9].ToString(),
                     colors, price);
                 l.Add(product);
             }
@@ -106,12 +116,17 @@ namespace DraShopDAO
             {
                 List<ProductColor> color = colorDAO.GetProductColorsByProduct(dr[0].ToString());
                 ProductPrice price = priceDAO.GetProductPrice(dr[0].ToString());
+                if (price != null)
+                {
+                    price.date_effect = price.date_effect.ToString();
+                    price.date_expired = price.date_expired.ToString();
+                }
                 Product product = new Product(dr[0].ToString(),
                     dr[1].ToString(), dr[2].ToString(),
                     dr[3].ToString(), dr[4].ToString(),
                     dr[5].ToString(), dr[6].ToString(),
                     dr[7].ToString(), dr[8].ToString(),
-                    dr[9].ToString(), dr[10].ToString(),
+                    dr[9].ToString(),
                     color, price);
                 l.Add(product);
             }
@@ -135,12 +150,47 @@ namespace DraShopDAO
             {
                 List<ProductColor> color = colorDAO.GetProductColorsByProduct(dr[0].ToString());
                 ProductPrice price = priceDAO.GetProductPrice(dr[0].ToString());
+                if (price != null)
+                {
+                    price.date_effect = price.date_effect.ToString();
+                    price.date_expired = price.date_expired.ToString();
+                }
                 Product product = new Product(dr[0].ToString(),
                     dr[1].ToString(), dr[2].ToString(),
                     dr[3].ToString(), dr[4].ToString(),
                     dr[5].ToString(), dr[6].ToString(),
                     dr[7].ToString(), dr[8].ToString(),
-                    dr[9].ToString(), dr[10].ToString(),
+                    dr[9].ToString(),
+                    color, price);
+                l.Add(product);
+            }
+            list.listProducts = l;
+            dr.NextResult();
+            while (dr.Read())
+            {
+                list.totalCount = dr["totalCount"].ToString();
+            }
+
+            return list;
+        }
+
+        public ProductList GetProductsByCategory(string category_id, int pageIndex, int pageSize, string name)
+        {
+            ProductList list = new ProductList();
+            List<Product> l = new List<Product>();
+            IProductColorDAO colorDAO = new ProductColorDAO();
+            IProductPriceDAO priceDAO = new ProductPriceDAO();
+            SqlDataReader dr = dh.StoreReader("GetProductsByCategoryAndGender", category_id, 2, pageIndex, pageSize, name);
+            while (dr.Read())
+            {
+                List<ProductColor> color = colorDAO.GetProductColorsByProduct(dr[0].ToString());
+                ProductPrice price = priceDAO.GetProductPrice(dr[0].ToString());
+                Product product = new Product(dr[0].ToString(),
+                    dr[1].ToString(), dr[2].ToString(),
+                    dr[3].ToString(), dr[4].ToString(),
+                    dr[5].ToString(), dr[6].ToString(),
+                    dr[7].ToString(), dr[8].ToString(),
+                    dr[9].ToString(),
                     color, price);
                 l.Add(product);
             }
@@ -177,14 +227,14 @@ namespace DraShopDAO
             DateTime date = DateTime.Now;
             dh.StoreReader("AddProduct", product._id, product.name, product.description,
                 product.category_id, product.made_in, product.gender, product.brand,
-                product.style_id, product.image_avatar, product.summary, date);
+                product.image_avatar, product.summary, date);
         }
 
         public void UpdateProduct(Product product)
         {
             dh.StoreReader("UpdateProduct", product._id, product.name, product.description,
                product.category_id, product.made_in, product.gender, product.brand,
-               product.style_id, product.image_avatar, product.summary);
+               product.image_avatar, product.summary);
         }
 
         public void DeleteProduct(string product_id)
@@ -204,15 +254,18 @@ namespace DraShopDAO
             {
                 List<ProductColor> ListColor = color.GetProductColorsByProduct(row[0].ToString().Trim());
                 ProductPrice prodPrice = price.GetProductPrice(row[0].ToString().Trim());
-                prodPrice.date_effect = prodPrice.date_effect.ToString();
-                prodPrice.date_expired = prodPrice.date_expired.ToString();
+                if(prodPrice != null)
+                {
+                    prodPrice.date_effect = prodPrice.date_effect.ToString();
+                    prodPrice.date_expired = prodPrice.date_expired.ToString();
+                }
                 Product prod = new Product(
                     row[0].ToString(), row[1].ToString(),
                     row[2].ToString(), row[3].ToString(),
                     row[4].ToString(), row[5].ToString(),
                     row[6].ToString(), row[7].ToString(),
                     row[8].ToString(), row[9].ToString(),
-                    row[10].ToString(), ListColor,
+                    ListColor,
                     prodPrice);
                 list.Add(prod);
 

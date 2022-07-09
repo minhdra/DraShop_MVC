@@ -33,10 +33,11 @@
                                 data-tooltips="tooltip">
                                 {{item.name}}
                             </h2>
-                            <div class="d-flex align-items-center">
-                                <input type="number" min="1" class="form-control w-50" ng-model="item.quantity"
+                            <div class="d-flex align-items-center flex-wrap">
+                                <span class="w-75">{{item.color}}</span>
+                                <span class="w-25">{{item.size}}</span>
+                                <input type="number" min="1" max="100" class="form-control w-100 mt-2" ng-model="item.quantity"
                                        ng-change="calcTotal($index, item, item.quantity)"/>
-                                <span class="w-50 text-center">{{item.size}}</span>
                             </div>
                         </div>
                         <div class="d-flex flex-column justify-content-around align-items-center">

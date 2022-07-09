@@ -5,7 +5,7 @@
 }
 
 <!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper" ng-controller="ManageProducts">
+<div class="content-wrapper" ng-controller="ManageProductsController">
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <div class="container-fluid">
@@ -20,11 +20,6 @@
                     </ol>
                 </div>
             </div>
-            <button class="btn btn-danger btn-sm" data-toggle="modal"
-                    data-target="#clickMe"
-                    ng-click="addProduct(0)">
-                Add Product
-            </button>
         </div><!-- /.container-fluid -->
     </section>
 
@@ -35,7 +30,7 @@
                 <div class="col-12">
                     <div class="card text-center">
                         <div class="card-header d-flex justify-content-between">
-                            <div class="d-flex w-25 justify-content-between">
+                            <div class="d-flex w-50 justify-content-between">
                                 <select class="form-control form-control-sm mr-2"
                                         ng-model="selectedValue"
                                         ng-change="SortBy()">
@@ -59,14 +54,22 @@
                                     <option value="Descending">Descending</option>
                                 </select>
                             </div>
-                            <div class="w-75 text-right">Total: {{totalCount}}</div>
+                            <div class="w-50 d-flex justify-content-end align-items-center">
+                                <button class="btn btn-danger btn-sm" data-toggle="modal"
+                                        data-target="#clickMe"
+                                        ng-click="addProduct(0)">
+                                    Add New
+                                </button>
+                                <div class="text-right ml-3">Total: {{totalCount}}</div>
+                            </div>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body table-responsive">
                             <table id="productsTable" class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Id</th>
+                                        <th></th>
+                                        <th>#</th>
                                         <th>C-Id</th>
                                         <th>Name</th>
                                         <th>Image</th>
@@ -83,9 +86,14 @@
                                 <tbody>
                                     <tr dir-paginate="item in products | orderBy:sortColumn:reverse | itemsPerPage:pageSize"
                                         total-items="totalCount"
-                                        ng-click="goDetails($event, item)"
-                                        data-href="/Admin/ManageProducts/ProductDetails">
-                                        
+                                        >
+                                        <td>
+                                            <div class="border-circle"
+                                                 ng-click="goDetails($event, item)"
+                                                 data-href="/Admin/ManageProducts/ProductDetails">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </div>
+                                        </td>
                                         <td>{{item._id}}</td>
                                         <td>{{item.category_id}}</td>
                                         <td title="{{item.name}}"
@@ -137,7 +145,7 @@
                         <dir-pagination-controls max-size="maxSize"
                                                  direction-links="true"
                                                  boundary-links="true"
-                                                 on-page-change="GetProuducts(newPageNumber)"></dir-pagination-controls>
+                                                 on-page-change="GetProducts(newPageNumber)"></dir-pagination-controls>
                     </div>
                     <!-- /.card -->
                     <!-- /.card -->
@@ -151,7 +159,7 @@
     <!-- /.content -->
     <!-- Button trigger modal -->
     <!-- Modal -->
-    <div class="modal fade" id="clickMe" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="clickMe">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
@@ -164,8 +172,8 @@
                     <table id="example2" class="table table-bordered table-hover">
                         <tbody>
                             <tr>
-                                <td>
-                                    <label for="id">Id</label>
+                                <td class="d-flex">
+                                    <label class="w-50">Id</label>
                                     <input id="id" class="form-control" ng-model="product._id" disabled />
                                 </td>
                             </tr>
@@ -187,12 +195,13 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <div>
-                                        <img class="w-100" ng-src="{{product.image_avatar}}" />
+                                    <div class="text-center">
+                                        <img class="w-50" ng-src="{{product.image_avatar}}" />
                                     </div>
                                     <label for="image">Image</label>
-                                    <input id="image" class="form-control" ng-model="product.image_avatar" 
-                                           placeholder="Link image"/>
+                                    <input id="image" class="form-control" ng-model="product.image_avatar"
+                                           onclick="this.select()"
+                                           placeholder="Link image" />
                                     or
                                     @*<input type="file" class="form-control-file" ngf-select="UploadFiles($file)"/>*@
                                 </td>
@@ -225,12 +234,6 @@
                                 <td>
                                     <label for="summary">Summary</label>
                                     <input id="summary" class="form-control" ng-model="product.summary" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label for="style_id">Style Id</label>
-                                    <input id="style_id" class="form-control" ng-model="product.style_id" />
                                 </td>
                             </tr>
                             <tr>

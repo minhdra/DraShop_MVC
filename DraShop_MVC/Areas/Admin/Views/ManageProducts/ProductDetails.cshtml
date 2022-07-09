@@ -4,7 +4,7 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 <!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper" ng-controller="ManageProductDetails">
+<div class="content-wrapper" ng-controller="ManageProductDetailsController">
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <div class="container-fluid">
@@ -63,7 +63,8 @@
                             <table id="tableColors" class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Id</th>
+                                        <th></th>
+                                        <th>#</th>
                                         <th>Product id</th>
                                         <th>Color</th>
                                         <th>Images</th>
@@ -74,8 +75,13 @@
                                 <tbody>
                                     <tr dir-paginate="item in colors | orderBy:sortColumn:reverse | itemsPerPage:pageSize"
                                         total-items="totalCount"
-                                        ng-click="showSize(item, $event)">
-
+                                        >
+                                        <td>
+                                            <div class="border-circle"
+                                                 ng-click="showSize(item, $event)">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </div>
+                                        </td>
                                         <td>{{item._id}}</td>
                                         <td>{{product._id}}</td>
                                         <td>
@@ -150,7 +156,7 @@
                             <table id="example2" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
-                                        <th>Id</th>
+                                        <th>#</th>
                                         <th>Color id</th>
                                         <th>Size</th>
                                         <th>Quantity</th>
@@ -208,7 +214,7 @@
                             <table class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Id</th>
+                                        <th>#</th>
                                         <th>Product id</th>
                                         <th>Price</th>
                                         <th>Date effect</th>

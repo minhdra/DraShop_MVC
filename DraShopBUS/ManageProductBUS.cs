@@ -23,6 +23,11 @@ namespace DraShopBUS
             return proDAO.GetProducts();
         }
 
+        public List<Product> SearchProducts(string category_id, string keyword)
+        {
+            return proDAO.SearchProducts(category_id, keyword);
+        }
+
         public List<Product> GetProductsByCategory(string category_id)
         {
             return proDAO.GetProductsByCategory(category_id);
@@ -31,6 +36,11 @@ namespace DraShopBUS
         public ProductList GetProductsByCategoryAndGender(string category_id, int gender, int pageIndex, int pageSize, string name)
         {
             return proDAO.GetProductsByCategoryAndGender(category_id, gender, pageIndex, pageSize, name);
+        }
+
+        public ProductList GetProductsByCategory(string category_id, int pageIndex, int pageSize, string name)
+        {
+            return proDAO.GetProductsByCategory(category_id, pageIndex, pageSize, name);
         }
 
         public List<Product> GetProductsHotMen()
